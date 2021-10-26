@@ -1,11 +1,26 @@
 const mysql = require('mysql');
 
-const db = mysql.createConnection({
+// const db = mysql.createConnection({
+//     host:'localhost',
+//     user:'root',
+//     password:'',
+//     database:'test'
+// });
+const config = 
+{
     host:'localhost',
     user:'root',
     password:'',
     database:'test'
-});
+};
+try
+{
+    const db = await mysql.createConnection(config);
+
+}catch(err)
+{
+    console.log("\nDatabase connection error!\n");
+}
 
 db.connect(err=>
 {
