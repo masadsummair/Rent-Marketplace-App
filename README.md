@@ -1,4 +1,4 @@
 # RentApp
--go to client and run npm install
+-go to client and run yarn install
 
--then go to server and run npm install
+-then go to server and run yarn install
