@@ -1,7 +1,7 @@
-export default color = {
+export default {
     primary:'#505050',
-    secondary: '#FDFDFD',
-    background: 'BDBDC7',
+    secondary: '#BDBDC7',
+    background: '#FDFDFD',
     black:'#000',
     white:'#fff'
   };
