@@ -3,5 +3,6 @@ export default {
     secondary: '#BDBDC7',
     background: '#FDFDFD',
     black:'#000',
-    white:'#fff'
+    white:'#fff',
+    lightSeaBlue:'#DAF0EE',
   };

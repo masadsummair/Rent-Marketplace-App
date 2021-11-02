@@ -3,8 +3,13 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './navigation/AuthNavigator';
+import { useFonts } from 'expo-font';
 
 export default function App() {
+  const [loaded] = useFonts({
+    Roboto: require('./assets/fonts/Roboto-Black.ttf'),
+});
+  
   return (
     <NavigationContainer>
       <AuthNavigator/>

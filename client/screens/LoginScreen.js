@@ -8,6 +8,8 @@ import AppTextInput from '../components/AppTextInput';
 import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import AppText from '../components/AppText';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Input } from 'react-native-elements';
 
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
@@ -17,8 +19,6 @@ const validationSchema = Yup.object().shape({
 export default function LoginScreen() {
     return (
        <Screen  style={styles.container}>
-            <Image style={styles.logo} source={require('../assets/favicon.png')} />
-            
             <Formik 
             initialValues={{email:"",password:""}}
             onSubmit={values => console.log(values)}
@@ -26,10 +26,13 @@ export default function LoginScreen() {
             >
                 {({handleChange, handleSubmit,errors,setFieldTouched,touched})=>(
                 <>
-                    <AppTextInput 
+
+                    {/* <Input 
                     autoCapitalize= 'none'
                     autoCorrect={false} 
-                    icon="email"
+                    leftIcon={    
+                        <Icon name='envelope' size={15} color='grey'/>  
+                    }
                     keyboard="email-address" 
                     onBlur={()=>setFieldTouched("email")}
                     placeholder="Email"
@@ -38,10 +41,12 @@ export default function LoginScreen() {
                     />
                     <ErrorMessage error={errors.email} visible={touched.email} />
 
-                    <AppTextInput 
+                    <Input 
                     autoCapitalize= 'none'
                     autoCorrect={false} 
-                    icon="lock"
+                    leftIcon={    
+                        <Icon name='lock' size={22} color='grey'/>  
+                    }
                     onBlur={()=>setFieldTouched("password")}
                     secureTextEntry
                     placeholder="Password"
@@ -50,7 +55,7 @@ export default function LoginScreen() {
                     />
                     <ErrorMessage error={errors.password} visible={touched.password} />
 
-                    <AppButton title="login" onPress={handleSubmit} />
+                    <AppButton title="login" onPress={handleSubmit} /> */}
                 </>
                 )}
             </Formik>
