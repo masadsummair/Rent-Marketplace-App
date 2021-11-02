@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
+import {  Dimensions,ImageBackground, StyleSheet, Text, View } from 'react-native'
 import AppButton from '../components/AppButton'
 
 
@@ -16,7 +16,7 @@ export default function WelcomeScreen({navigation}) {
           <View style={styles.buttonContainer}>
             <AppButton style={styles.loginBtn} title='Sign In' onPress={() => navigation.navigate("Login")} />
             <AppButton style={styles.RegisterBtn}
-            title='Create New Account' color='lightSeaBlue' textColor="primary" onPress={() => navigation.navigate("Register")}  />
+            title='Create New Account' color='transparent' textColor="primary" onPress={() => navigation.navigate("Register")}  />
           </View>
        </ImageBackground>
     )
@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
     {
         flex:1,
         justifyContent:'flex-end',
-        alignItems:'center'
+        alignItems:'center',
+        width: Dimensions.get("window").width, //for full screen
+        height: Dimensions.get("window").height, //for full screen
     },
     buttonContainer:
     {
@@ -56,19 +58,10 @@ const styles = StyleSheet.create({
         fontFamily:'Roboto',
         color:'#505050'
     },
-    loginBtn:
-    {
-        shadowColor: 'rgba(0, 0, 0, 1)',
-        shadowOpacity: 0.8,elevation: 6,
-        shadowRadius: 15 ,
-        shadowOffset : { width: 1, height: 13}
-    },
     RegisterBtn:
     {   
-        borderWidth:2,borderColor:'rgba(0, 0, 0, 0.35)',
-        shadowColor: 'rgba(0, 0, 0, 1)',
-        shadowOpacity: 0.8,elevation: 6,
-        shadowRadius: 15 ,
-        shadowOffset : { width: 1, height: 13}
+        borderWidth:2,
+        borderColor:'#505050',
+        opacity: 0.7,
     }
 })

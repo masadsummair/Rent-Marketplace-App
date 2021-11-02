@@ -5,4 +5,5 @@ export default {
     black:'#000',
     white:'#fff',
     lightSeaBlue:'#DAF0EE',
+    transparent:'transparent'
   };

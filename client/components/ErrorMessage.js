@@ -11,6 +11,7 @@ export default function ErrorMessage({error,visible}) {
 const styles = StyleSheet.create({
     error:
     {
-        color:"red"
+        color:"red",
+        left:25
     },
 })

@@ -1,6 +1,6 @@
 import React from 'react';
 import  Constants  from 'expo-constants';
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Screen({children,style}) {
