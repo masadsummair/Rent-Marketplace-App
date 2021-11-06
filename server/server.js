@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
 const port = 3000;
-//db not setup yet
 
 //middleware
 app.use(cors()); //making cross-domain requests possible  

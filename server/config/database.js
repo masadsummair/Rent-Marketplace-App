@@ -7,7 +7,6 @@ const config =
     database:'dbproject'
 };
 const db =  mysql.createConnection(config);
-
 db.connect(err=>
 {
     if(err)
