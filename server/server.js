@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('./utils/database.js');
+const db = require('./config/database.js');
 const router = require('./routes/routes.js');
 const {json , urlencoded} = require('body-parser');
 const morgan = require('morgan');
@@ -7,17 +7,6 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 //db not setup yet
-
-// db.connect(function(err) {
-//   db.query("select * from testnode;" , function(err,result,fields)
-//   {
-//     setValue(result);
-//   });
-// });
-// function setValue(res)
-// {
-//   data=Object.values(JSON.parse(JSON.stringify(res)));
-// }
 
 //middleware
 app.use(cors()); //making cross-domain requests possible  
