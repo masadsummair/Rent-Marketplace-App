@@ -1,57 +1,38 @@
 const db = require('../config/database.js');
 const bcrypt = require('bcrypt');
 
-function checkEmail(res,email)
-{
-  for(let i=0;i<=res.length-1;i++)
-  {
-    if(email==(JSON.parse(JSON.stringify(res[i]))).email)
-    {
-      return true;
-    }
-  }
-  return false;
-}
+
 function checkLoginData(res,data)
 {
-    for(let i=0;i<=res.length-1;i++)
-    {
-      let dbUser=JSON.parse(JSON.stringify(res[i]));
-      if(data.email==dbUser.email)
-      {
-        return new Promise(function(resolve, reject)
-        {
-          bcrypt.compare(data.password, dbUser.password, (err, compareRes) => {
-            if (err) { // error while comparing
-              reject();
-            } else if (compareRes) { // password match
-              resolve();
-            } else { // password doesnt match
-              reject();
-            };
-          });
-        });
-      }
-    }
     return new Promise(function(resolve, reject)
     {
-      reject();
+      let dbpassword=JSON.parse(JSON.stringify(res[0])).password;
+      bcrypt.compare(data.password, dbpassword, (err, compareRes) => {
+        if (err) { // error while comparing
+          reject();
+        } else if (compareRes) { // password match
+          resolve();
+        } else { // password doesnt match
+          reject();
+        };
+      });
     });
 }
 const signup = (req,res,next)=>
 {
-  var data={};
+  let data={};
   data=req.body;
   const user ={user_id:0,f_name:data.first_name,l_name:data.last_name,cnic:data.cnic,phone:data.phone,street:data.street,city:data.city,country:data.country,dob:data.birth_date,email:data.email,password:0};
 
-  const data_into_user_and_login_table = new Promise((resolve,reject)=>
+  const check_email = new Promise((resolve,reject)=>
   {
-    db.query("select * from logins",(err,result,fields)=>
+    db.query(`select * from logins where email like "${user.email}";`,(err,result,fields)=>
    {
-     resolve(checkEmail(result,user.email));
+    if(err){ throw err; console.log("----sql error----");};
+     resolve(result,user.email);
    });
   })
-  data_into_user_and_login_table.then(
+  check_email.then(
     (status)=>
     {
       if(status==false)
@@ -72,7 +53,7 @@ const signup = (req,res,next)=>
             `INSERT INTO users( first_name, last_name, cnic, phone, street, city, country, birth_date) VALUES ("${user.f_name}","${user.l_name}",${user.cnic},${user.phone},"${user.street}","${user.city}","${user.country}",${user.dob})`,
             (err, result)=>
             {
-              if (err) throw err;
+               if(err){ throw err; console.log("----sql error----");};
               console.log("1 record inserted in user table");
               resolve("1 record inserted in user table");
             });
@@ -99,7 +80,7 @@ const signup = (req,res,next)=>
                     `INSERT INTO logins(user_id, email, password) VALUES (${u_id},"${user.email}","${passwordHash}")`,
                     (err, result)=>
                     {
-                      if (err) throw err;
+                       if(err){ throw err; console.log("----sql error----");};
                       console.log("1 record inserted in login table");
                       res.status(200).json({"message":"user data insert to user and login table"});
                     });
@@ -119,12 +100,13 @@ const login = (req,res,next)=>
 {
     let data={}
     data=req.body;
-    db.query("select * from logins;" , function(err,result,fields)
+    db.query(`select * from logins where email like "${data.email}";` , function(err,result,fields)
     {
-      if(err) throw err;
+      if(err){ throw err; console.log("----sql error----");};
       checkLoginData(result,data).then(
         ()=>
         {
+          console.log("login");
           res.status(200).json({"message":"login"});
         },
         ()=>
