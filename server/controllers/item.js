@@ -63,8 +63,13 @@ const addItem = (req,res,next)=>
         db.query(`SELECT cate_id FROM item_categories WHERE category_name like "${itemData.category_name}" `,(err,result,fields)=>
         {
             if (err) {console.log("----sql error----");throw err; }
-            resolve(JSON.parse(JSON.stringify(result[0])).cate_id);
-            reject();
+            if(result.length==0)
+            {
+                reject();
+            }else 
+            {
+                resolve(JSON.parse(JSON.stringify(result[0])).cate_id);
+            }
         });
     });
     check_user_id(itemData).then(
@@ -107,7 +112,75 @@ const addItem = (req,res,next)=>
 }
 const updateItem = (req,res,next)=>
 {
- 
+    let data={};
+    data=req.body;
+    const itemData={user_id:data.user_id,item_id:data.item_id,availability:data.availability,name:data.name,price:data.price,category_name:data.category_name};
+    const check_itemid = new Promise((resolve,reject)=>
+    {
+        db.query(`SELECT item_name,user_id FROM items WHERE item_id=${itemData.item_id} and user_id=${itemData.user_id}`,(err,result,fields)=>
+        {
+            if(err){ console.log("----sql error----");throw err; };
+            let name=JSON.stringify(result[0]);
+            console.log(name);
+            if(name===undefined)
+            {
+                reject();
+            }else 
+            {
+                resolve();
+            }
+        });
+    })
+    const get_cate_id = new Promise((resolve,reject)=>
+    {
+        db.query(`SELECT cate_id FROM item_categories WHERE category_name like "${itemData.category_name}" `,(err,result,fields)=>
+        {
+            if (err) {console.log("----sql error----");throw err; }
+            if(result.length==0)
+            {
+                reject();
+            }else 
+            {
+                resolve(JSON.parse(JSON.stringify(result[0])).cate_id);
+            }
+        });
+    });
+    check_user_id(itemData).then(
+        ()=>
+        {
+            check_itemid.then(
+                ()=>{
+                    get_cate_id.then(
+                        (cate_id)=>
+                        {
+                            db.query(
+                                `UPDATE items SET item_name="${itemData.name}",availability="${itemData.availability}",price_per_hour=${itemData.price},cate_id=${cate_id} WHERE user_id=${itemData.user_id} and item_id=${itemData.item_id}`,
+                                (err, result)=>
+                                {
+                                    if(err){ console.log("----sql error----");throw err; };
+                                    console.log("1 record updated in item table");
+                                    res.status(200).json({"message":"1 item updated to items table"});
+                            });
+                        },
+                        ()=>
+                        {
+                            res.status(200).json({"message":"category not found"});
+                        }
+                    );
+                },
+                ()=>
+                {
+                    console.log("item not found");
+                    res.status(200).json({"message":"item not found"});
+                }
+            );
+        },
+        ()=>
+        {
+            console.log("user_id not exisit");
+            res.status(200).json({"message":"user not match"});
+        }
+    );
 }
 const deleteItem = (req,res,next)=>
 {
