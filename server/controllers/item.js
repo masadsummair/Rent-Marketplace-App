@@ -1,5 +1,23 @@
 const db = require('../config/database.js');
 
+const check_user_id = (itemData) =>{
+    return new Promise((resolve,reject)=>
+    {
+        db.query(`SELECT user_id FROM users WHERE user_id=${itemData.user_id}`,(err,result,fields)=>
+        {
+            if(err){ console.log("----sql error----");throw err; };
+            let user_id=JSON.stringify(result[0]);
+            if(user_id===undefined)
+            {
+                reject();   
+            }else 
+            {
+                resolve();
+            }
+        });
+    });
+}
+
 const viewItem = (req,res,next)=>
 {
     const user_id=req.body.user_id;
@@ -24,23 +42,7 @@ const addItem = (req,res,next)=>
 {
     let data={};
     data=req.body;
-
     const itemData={user_id:data.user_id,name:data.name,price:data.price,category_name:data.category_name};
-    const check_user_id = new Promise((resolve,reject)=>
-    {
-        db.query(`SELECT user_id FROM users WHERE user_id=${itemData.user_id}`,(err,result,fields)=>
-        {
-            if(err){ console.log("----sql error----");throw err; };
-            let user_id=JSON.stringify(result[0]);
-            if(user_id===undefined)
-            {
-                reject();
-            }else 
-            {
-                resolve();
-            }
-        });
-    })
     const check_itemName = new Promise((resolve,reject)=>
     {
         db.query(`SELECT item_name,user_id FROM items WHERE item_name like "${itemData.name}" and user_id=${itemData.user_id}`,(err,result,fields)=>
@@ -65,7 +67,7 @@ const addItem = (req,res,next)=>
             reject();
         });
     });
-    check_user_id.then(
+    check_user_id(itemData).then(
         ()=>
         {
             check_itemName.then(
@@ -109,6 +111,30 @@ const updateItem = (req,res,next)=>
 }
 const deleteItem = (req,res,next)=>
 {
-    
+    const itemData={user_id:req.body.user_id,item_id:req.body.item_id};
+
+    check_user_id(itemData).then(
+        ()=>
+        {
+            db.query(`DELETE FROM items WHERE item_id=${itemData.item_id} and user_id=${itemData.user_id} `,(err,result,fields)=>
+            {
+                if(err){ console.log("----sql error----");throw err; };
+                if(result.affectedRows==0)
+                {
+                    console.log("nothing to delete");
+                    res.status(200).json({"message":"nothing to delete"});
+                }else{
+                    console.log("1 row delete from items table");
+                    res.status(200).json({"message":"1 row delete from items table"});
+                }
+                
+            });
+        },
+        ()=>
+        {
+            console.log("user_id not exisit");
+            res.status(200).json({"message":"user not match"});
+        }
+    );
 }
 module.exports = { viewItem,addItem,updateItem,deleteItem};
