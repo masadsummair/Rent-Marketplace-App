@@ -10,13 +10,13 @@ router.post('/login',login);
 
 router.post('/signup',signup);
 
-router.get('/viewitem',viewItem);
-
 router.post('/additem',addItem);
+
+router.post('/deleteitem',deleteItem);
 
 router.post('/updateitem',updateItem);
 
-router.post('/deleteitem',deleteItem);
+router.post('/viewitem',viewItem);
 
 router.get('/private',isAuth);
 
