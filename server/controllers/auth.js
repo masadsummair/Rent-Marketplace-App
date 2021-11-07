@@ -17,14 +17,19 @@ function checkLoginData(res,data)
     for(let i=0;i<=res.length-1;i++)
     {
       let dbUser=JSON.parse(JSON.stringify(res[i]));
+
       if(data.email==dbUser.email)
       {
+        
         return new Promise(function(resolve, reject)
         {
+          
           bcrypt.compare(data.password, dbUser.password, (err, compareRes) => {
+            
             if (err) { // error while comparing
               reject();
             } else if (compareRes) { // password match
+              // console.log(data);
               resolve();
             } else { // password doesnt match
               reject();
@@ -124,6 +129,7 @@ const login = (req,res,next)=>
     db.query("select * from logins;" , function(err,result,fields)
     {
       if(err) throw err;
+      // console.log(data);
       checkLoginData(result,data).then(
         ()=>
         {
