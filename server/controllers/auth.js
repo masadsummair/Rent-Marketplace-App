@@ -17,14 +17,19 @@ function checkLoginData(res,data)
     for(let i=0;i<=res.length-1;i++)
     {
       let dbUser=JSON.parse(JSON.stringify(res[i]));
+
       if(data.email==dbUser.email)
       {
+        
         return new Promise(function(resolve, reject)
         {
+          
           bcrypt.compare(data.password, dbUser.password, (err, compareRes) => {
+            
             if (err) { // error while comparing
               reject();
             } else if (compareRes) { // password match
+              // console.log(data);
               resolve();
             } else { // password doesnt match
               reject();
@@ -48,6 +53,7 @@ const signup = (req,res,next)=>
   {
     db.query("select * from logins",(err,result,fields)=>
    {
+    if (err) {console.log("----sql error----");throw err; }
      resolve(checkEmail(result,user.email));
    });
   })
@@ -72,7 +78,7 @@ const signup = (req,res,next)=>
             `INSERT INTO users( first_name, last_name, cnic, phone, street, city, country, birth_date) VALUES ("${user.f_name}","${user.l_name}",${user.cnic},${user.phone},"${user.street}","${user.city}","${user.country}",${user.dob})`,
             (err, result)=>
             {
-              if (err) throw err;
+              if (err) {console.log("----sql error----");throw err; }
               console.log("1 record inserted in user table");
               resolve("1 record inserted in user table");
             });
@@ -83,6 +89,7 @@ const signup = (req,res,next)=>
           `SELECT MAX(user_id) as "m_id" FROM users`,
             (err,result)=>
           {
+            if (err) {console.log("----sql error----");throw err; }
             console.log("get user id from user table");
             resolve(JSON.parse(JSON.stringify(result[0])).m_id);
           });
@@ -99,7 +106,7 @@ const signup = (req,res,next)=>
                     `INSERT INTO logins(user_id, email, password) VALUES (${u_id},"${user.email}","${passwordHash}")`,
                     (err, result)=>
                     {
-                      if (err) throw err;
+                      if (err) {console.log("----sql error----");throw err; }
                       console.log("1 record inserted in login table");
                       res.status(200).json({"message":"user data insert to user and login table"});
                     });
@@ -122,6 +129,7 @@ const login = (req,res,next)=>
     db.query("select * from logins;" , function(err,result,fields)
     {
       if(err) throw err;
+      // console.log(data);
       checkLoginData(result,data).then(
         ()=>
         {
