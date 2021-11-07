@@ -1,6 +1,6 @@
 import React from 'react'
-import { Dimensions,Text,ImageBackground,TouchableOpacity,View, StyleSheet} from 'react-native'
-import { Formik } from 'formik';
+import { ScrollView,Dimensions,Text,ImageBackground,TouchableOpacity,View, StyleSheet} from 'react-native'
+import { Formik, FormikConsumer,FormikBag } from 'formik';
 import * as Yup from "yup"
 // import { Input } from 'react-native-elements';
 import AppButton from '../components/AppButton';
@@ -8,34 +8,35 @@ import AppTextInput from '../components/AppTextInput';
 import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import color from '../theme/color';
-const API_URL =  'http://localhost:3000/login' 
-
+import axios from 'axios';
+const client=axios.create({baseURL:'http://192.168.1.3:3000'});
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
     password:Yup.string().required().min(3).label("Password")
 });
 
 export default function LoginScreen({navigation}) {
+    const login=async (values,actions)=>
+    {
+        const res = await client.post('/login',
+        {
+            ...values,
+        })
+        console.log(res.data);
+        actions.resetForm();
+        actions.setSubmitting(false);
+    }
     return (
-        <ImageBackground
-            style={styles.background}  source={require('../assets/images/welcome_background.png')}>
+    <ImageBackground
+        style={styles.background}  source={require('../assets/images/welcome_background.png')}>
+    <ScrollView>
        <Screen  style={styles.container}>
-
+            
           
             <Formik 
             initialValues={{email:"",password:""}}
-            onSubmit={values => fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  email: values.email,
-                  password: values.password,
-                })
-              }).then((response) => console.log(response.json()))
-            }
+            onSubmit={login}
+
             validationSchema={validationSchema}
             >
                 {({handleChange, handleSubmit,errors,setFieldTouched,touched})=>(
@@ -45,7 +46,6 @@ export default function LoginScreen({navigation}) {
                     <AppTextInput 
                     autoCapitalize= 'none'
                     autoCorrect={false} 
-                    keyboard="email-address" 
                     onBlur={()=>setFieldTouched("email")}
                     placeholder="Enter Email"
                     textContentType='emailAddress'
@@ -66,19 +66,23 @@ export default function LoginScreen({navigation}) {
                     <TouchableOpacity style={{}} >
                         <Text style={[styles.text,{textAlign:"right",paddingRight:10}]} onPress={() => navigation.navigate("Welcome")} >Forget Passowrd ?</Text>
                     </TouchableOpacity>
+                    
                     <AppButton title="Sign In" onPress={handleSubmit} />
-                    <View style={{flexDirection:"row",alignSelf:"center"}} >
-                        <Text style={styles.text} >Don’t have account? </Text> 
-                        <TouchableOpacity >
-                                <Text style={[styles.text,{color:color.white}]} onPress={() => navigation.navigate("Register")} >Sign Up </Text>
-                        </TouchableOpacity>
-                    </View>
+                    <View style={{ flexDirection: "row", alignSelf: "center" }}>
+                    <Text style={styles.text}>Don't have account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                      <Text style={[styles.text, { color: color.white }]}>
+                        Sign Up{" "}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                     
                 </>
                 )}
             </Formik>
            
         </Screen>
+        </ScrollView>
         </ImageBackground>
     );
 }
@@ -87,7 +91,8 @@ const styles = StyleSheet.create({
     container:
     {
         padding:10,
-        top:50
+        top:50,
+        marginBottom:120
     },
     background:
     {

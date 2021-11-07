@@ -16,6 +16,6 @@ app.use(morgan('dev'));//it does all the loging for us (run server by using "yar
 app.use(router)
 
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+app.listen(port,'192.168.1.3', () => {
+  console.log(`App listening at http://192.168.1.3:${port}`);
 });

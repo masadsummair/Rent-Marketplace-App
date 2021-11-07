@@ -3,8 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import Home from '../screens/HomeScreen';
-const API_URL =  'http://localhost:3000' 
+import Home from '../screens/HomeScreen'; 
 const Stack = createStackNavigator();
 
 export default function AuthNavigator() 
