@@ -8,14 +8,14 @@ import AppTextInput from '../components/AppTextInput';
 import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import color from '../theme/color';
-
+const API_URL =  'http://localhost:3000/login' 
 
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
     password:Yup.string().required().min(3).label("Password")
 });
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
     return (
         <ImageBackground
             style={styles.background}  source={require('../assets/images/welcome_background.png')}>
@@ -24,7 +24,18 @@ export default function LoginScreen() {
           
             <Formik 
             initialValues={{email:"",password:""}}
-            onSubmit={values => console.log(values)}
+            onSubmit={values => fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: values.email,
+                  password: values.password,
+                })
+              }).then((response) => console.log(response.json()))
+            }
             validationSchema={validationSchema}
             >
                 {({handleChange, handleSubmit,errors,setFieldTouched,touched})=>(
@@ -53,13 +64,13 @@ export default function LoginScreen() {
                     />
                     <ErrorMessage error={errors.password} visible={touched.password} />
                     <TouchableOpacity style={{}} >
-                        <Text style={[styles.text,{textAlign:"right",paddingRight:10}]} >Forget Passowrd ?</Text>
+                        <Text style={[styles.text,{textAlign:"right",paddingRight:10}]} onPress={() => navigation.navigate("Welcome")} >Forget Passowrd ?</Text>
                     </TouchableOpacity>
                     <AppButton title="Sign In" onPress={handleSubmit} />
                     <View style={{flexDirection:"row",alignSelf:"center"}} >
                         <Text style={styles.text} >Don’t have account? </Text> 
                         <TouchableOpacity >
-                                <Text style={[styles.text,{color:color.white}]} >Sign Up </Text>
+                                <Text style={[styles.text,{color:color.white}]} onPress={() => navigation.navigate("Register")} >Sign Up </Text>
                         </TouchableOpacity>
                     </View>
                     
