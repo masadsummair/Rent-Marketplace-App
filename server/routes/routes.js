@@ -16,7 +16,7 @@ router.post('/deleteitem',deleteItem);
 
 router.post('/updateitem',updateItem);
 
-router.get('/viewitem',viewItem);
+router.post('/viewitem',viewItem);
 
 router.get('/private',isAuth);
 

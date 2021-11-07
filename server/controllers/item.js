@@ -1,27 +1,23 @@
 const db = require('../config/database.js');
 
-function checkLoginData(res,data)
-{
-    for(let i=0;i<=res.length-1;i++)
-    {
-      let itemData=JSON.parse(JSON.stringify(res[i]));
-      if(data.name==itemData.name)
-      {
-        return new Promise(function(resolve, reject)
-        {
-            reject();
-        });
-      }
-    }
-    return new Promise(function(resolve, reject)
-    {
-        resolve();
-    });
-}
-
 const viewItem = (req,res,next)=>
 {
-    
+    const user_id=req.body.user_id;
+    db.query(`SELECT I.*,C.category_name FROM items I inner join Item_categories C on C.cate_id=I.cate_id WHERE user_id=${user_id}`,(err,result,fields)=>
+    {
+        if(err){ console.log("----sql error----");throw err; };
+        if(result.length==0)
+        {
+            res.status(200).json({"message":"no item found"});
+        }
+        const data=JSON.parse(JSON.stringify(result));
+        for(let i=0;i<data.length-1;i++)
+        {
+            delete data[i]["cate_id"];
+        }
+        console.log(data);
+        res.status(200).json(data);
+    });
 }
 
 const addItem = (req,res,next)=>
