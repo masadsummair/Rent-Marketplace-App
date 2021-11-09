@@ -5,7 +5,7 @@ const {json , urlencoded} = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
-const port = 3000;
+const port = 8000;
 //db not setup yet
 
 //middleware
@@ -16,6 +16,6 @@ app.use(morgan('dev'));//it does all the loging for us (run server by using "yar
 app.use(router)
 
 
-app.listen(port,'192.168.1.3', () => {
-  console.log(`App listening at http://192.168.1.3:${port}`);
+app.listen(port,'192.168.43.105', () => {
+  console.log(`App listening at http:// 192.168.43.105:${port}`);
 });

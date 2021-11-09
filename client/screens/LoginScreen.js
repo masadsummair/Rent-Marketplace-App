@@ -9,7 +9,7 @@ import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import color from '../theme/color';
 import axios from 'axios';
-const client=axios.create({baseURL:'http://192.168.1.3:3000'});
+const client=axios.create({baseURL:'http://192.168.43.105:8000'});
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
     password:Yup.string().required().min(3).label("Password")
@@ -22,7 +22,11 @@ export default function LoginScreen({navigation}) {
         {
             ...values,
         })
-        console.log(res.data);
+        console.log(res.data.status);
+        if(res.data.status)
+        {
+          navigation.navigate("Home");
+        }
         actions.resetForm();
         actions.setSubmitting(false);
     }

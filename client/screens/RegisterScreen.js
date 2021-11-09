@@ -18,7 +18,7 @@ import Screen from "../components/Screen";
 import ErrorMessage from "../components/ErrorMessage";
 import color from "../theme/color";
 import axios from 'axios';
-const client=axios.create({baseURL:'http://192.168.1.3:3000'});
+const client=axios.create({baseURL:'http://192.168.43.105:8000'});
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -32,7 +32,11 @@ export default function RegisterScreen({navigation}) {
         {
             ...values,
         })
-        console.log(res.data);
+        console.log(res.data.status);
+        if(res.data.status)
+        {
+          navigation.navigate("Home");
+        }
         actions.resetForm();
         actions.setSubmitting(false);
     }
@@ -44,7 +48,7 @@ export default function RegisterScreen({navigation}) {
         <ScrollView>
         <Screen style={styles.container}>
          
-            <Text style={styles.heading}>Register</Text>
+            <Text style={styles.heading}>gister</Text>
             <Formik
               initialValues={{
                 email: '',

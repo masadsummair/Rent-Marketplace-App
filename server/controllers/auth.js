@@ -108,7 +108,7 @@ const signup = (req,res,next)=>
                     {
                       if (err) {console.log("----sql error----");throw err; }
                       console.log("1 record inserted in login table");
-                      res.status(200).json({"message":"user data insert to user and login table"});
+                      res.status(200).json({"status":true,"message":"user data insert to user and login table"});
                     });
                 })
               }
@@ -133,7 +133,7 @@ const login = (req,res,next)=>
       checkLoginData(result,data).then(
         ()=>
         {
-          res.status(200).json({"message":"login"});
+          res.status(200).json({"status":true,"message":"login"});
         },
         ()=>
         {
