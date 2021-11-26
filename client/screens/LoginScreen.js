@@ -9,7 +9,8 @@ import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import color from '../theme/color';
 import axios from 'axios';
-const client=axios.create({baseURL:'http://192.168.43.105:8000'});
+import API_URL from '../config/getipaddress'
+const client=axios.create({baseURL:API_URL});
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
     password:Yup.string().required().min(3).label("Password")

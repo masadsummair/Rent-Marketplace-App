@@ -6,7 +6,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
 const port = 8000;
-//db not setup yet
+const { networkInterfaces } = require('os');
+const nets = networkInterfaces();
+const IP=nets['Wi-Fi'][1].address;
 
 //middleware
 app.use(cors()); //making cross-domain requests possible  
@@ -16,6 +18,6 @@ app.use(morgan('dev'));//it does all the loging for us (run server by using "yar
 app.use(router)
 
 
-app.listen(port,'192.168.43.105', () => {
-  console.log(`App listening at http:// 192.168.43.105:${port}`);
+app.listen(port,'192.168.1.1' ,() => {
+  console.log(`App listening at http://192.168.1.1:${port}`);
 });
