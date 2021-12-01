@@ -9,7 +9,7 @@ import Screen from '../components/Screen'
 import ErrorMessage from '../components/ErrorMessage'
 import color from '../theme/color';
 import axios from 'axios';
-import API_URL from '../config/getipaddress'
+import API_URL from '../config/API_URL'
 const client=axios.create({baseURL:API_URL});
 const validationSchema = Yup.object().shape({
     email:Yup.string().required().email().label("Email"),
@@ -23,8 +23,7 @@ export default function LoginScreen({navigation}) {
         {
             ...values,
         })
-        console.log(res.data.status);
-        if(res.data.status)
+        if(res.status==200)
         {
           navigation.navigate("Home");
         }

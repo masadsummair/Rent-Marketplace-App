@@ -18,7 +18,7 @@ import Screen from "../components/Screen";
 import ErrorMessage from "../components/ErrorMessage";
 import color from "../theme/color";
 import axios from 'axios';
-import API_URL from '../config/getipaddress'
+import API_URL from '../config/API_URL'
 const client=axios.create({baseURL:API_URL});
 
 const validationSchema = Yup.object().shape({
@@ -33,8 +33,7 @@ export default function RegisterScreen({navigation}) {
         {
             ...values,
         })
-        console.log(res.data.status);
-        if(res.data.status)
+        if(res.status==200)
         {
           navigation.navigate("Home");
         }
@@ -49,19 +48,19 @@ export default function RegisterScreen({navigation}) {
         <ScrollView>
         <Screen style={styles.container}>
          
-            <Text style={styles.heading}>gister</Text>
+            <Text style={styles.heading}>Register</Text>
             <Formik
               initialValues={{
                 email: '',
                 password: '',
-                first_name: '',
-                last_name: '',
+                firstName: '',
+                lastName: '',
                 cnic: '',
                 phone: '',
                 street: '',
                 city: '',
                 country: '',
-                birth_date: ''
+                birthDate: ''
               }}
               onSubmit={signup}
               validationSchema={validationSchema}
@@ -100,17 +99,17 @@ export default function RegisterScreen({navigation}) {
                   <AppTextInput
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onBlur={() => setFieldTouched("first_name")}
+                    onBlur={() => setFieldTouched("firstName")}
                     placeholder="First Name"
-                    onChangeText={handleChange("first_name")}
+                    onChangeText={handleChange("firstName")}
                   />
 
                   <AppTextInput
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onBlur={() => setFieldTouched("last_name")}
+                    onBlur={() => setFieldTouched("lastName")}
                     placeholder="Last Name"
-                    onChangeText={handleChange("last_name")}
+                    onChangeText={handleChange("lastName")}
                   />
 
                   <AppTextInput
@@ -156,9 +155,9 @@ export default function RegisterScreen({navigation}) {
                   <AppTextInput
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onBlur={() => setFieldTouched("birth_date")}
+                    onBlur={() => setFieldTouched("birthDate")}
                     placeholder="Birth Date"
-                    onChangeText={handleChange("birth_date")}
+                    onChangeText={handleChange("birthDate")}
                   />
 
                   <AppButton title="Sign Up" onPress={handleSubmit} />
