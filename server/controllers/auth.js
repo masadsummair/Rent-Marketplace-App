@@ -11,14 +11,13 @@ const signup = async (req, res, next) => {
     let [result1] = await conn.execute("SELECT * FROM user WHERE email = ?", [
       data.email,
     ]);
+    console.log(result1.length);
     if (result1.length > 0) {
-      return res.status(400).json({
+      res.status(202).json({
         message: "User already exists",
       });
       return;
     }
-    
-    
     let hashedPassword = await bcrypt.hash(data.password, 12);
     console.log(data);
     const [result2] = await conn.execute(
@@ -64,11 +63,11 @@ const login = async (req, res, next) => {
       res.status(200).json({ message: "user logged in", token: token });
     } else {
       console.log("Enter Correct Credentials");
-      res.status(200).json({ message: "Enter Correct Credentials" });
+      res.status(202).json({ message: "Enter Correct Credentials" });
     }
   } else {
     console.log("User Not Found");
-    res.status(200).json({ message: "User Not Found" });
+    res.status(202).json({ message: "User Not Found" });
   }
 };
 

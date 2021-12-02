@@ -13,6 +13,8 @@ app.use(json()); // tells the system that you want json to be used.
 app.use(urlencoded({ extended: true })); //allow us to attach parameters to a url like(?) etc
 app.use(morgan("dev")); //it does all the loging for us (run server by using "yarn dev" )("dev"->for details goto package.json scripts)
 app.use(router);
+app.use(express.static('public')); 
+app.use('/images', express.static('images'));
 
 // for localhost
 app.listen(port, () => {

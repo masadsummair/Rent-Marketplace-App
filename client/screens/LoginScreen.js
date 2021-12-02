@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView,Dimensions,Text,ImageBackground,TouchableOpacity,View, StyleSheet} from 'react-native'
+import { Modal,Pressable,ScrollView,Dimensions,Text,ImageBackground,TouchableOpacity,View, StyleSheet} from 'react-native'
 import { Formik, FormikConsumer,FormikBag } from 'formik';
 import * as Yup from "yup"
 // import { Input } from 'react-native-elements';
@@ -17,6 +17,8 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function LoginScreen({navigation}) {
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [message, setMessage] = React.useState("");
     const login=async (values,actions)=>
     {
         const res = await client.post('/login',
@@ -27,6 +29,12 @@ export default function LoginScreen({navigation}) {
         {
           navigation.navigate("Home");
         }
+        else if(res.status==202)
+        {
+          let msg=JSON.parse(res["request"]["_response"]).message;
+          setMessage(msg);
+          setModalVisible(true);
+        }
         actions.resetForm();
         actions.setSubmitting(false);
     }
@@ -34,6 +42,29 @@ export default function LoginScreen({navigation}) {
     <ImageBackground
         style={styles.background}  source={require('../assets/images/welcome_background.png')}>
     <ScrollView>
+    <View style={styles.centeredView}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    
+                    setModalVisible(!modalVisible);
+                  }}
+                >
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>{message}</Text>
+                      <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => {setModalVisible(!modalVisible); console.log(modalVisible)}}
+                      >
+                        <Text style={styles.textStyle}>Close</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
        <Screen  style={styles.container}>
             
           
@@ -43,7 +74,7 @@ export default function LoginScreen({navigation}) {
 
             validationSchema={validationSchema}
             >
-                {({handleChange, handleSubmit,errors,setFieldTouched,touched})=>(
+                {({handleChange, handleSubmit,errors,setFieldTouched,touched,values})=>(
                 <>
 
                     <Text style={styles.heading} >Login</Text>
@@ -54,6 +85,7 @@ export default function LoginScreen({navigation}) {
                     placeholder="Enter Email"
                     textContentType='emailAddress'
                     onChangeText={handleChange("email")}
+                    value={values.email}
                     />
                     <ErrorMessage error={errors.email} visible={touched.email} />
 
@@ -65,6 +97,7 @@ export default function LoginScreen({navigation}) {
                     placeholder="Enter Password"
                     textContentType='password'
                     onChangeText={handleChange("password")}
+                    value={values.password}
                     />
                     <ErrorMessage error={errors.password} visible={touched.password} />
                     <TouchableOpacity style={{}} >
@@ -118,5 +151,43 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         color:color.primary,
         alignContent:'center'
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      buttonClose: {
+        backgroundColor: "red",
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+      }
 })
