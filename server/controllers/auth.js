@@ -21,7 +21,7 @@ const signup = async (req, res, next) => {
     let hashedPassword = await bcrypt.hash(data.password, 12);
     console.log(data);
     const [result2] = await conn.execute(
-      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?)",
       [
         data.email,
         hashedPassword,
@@ -29,6 +29,7 @@ const signup = async (req, res, next) => {
         data.firstName,
         data.lastName,
         parseInt(data.phone),
+        data.area,
         data.street,
         data.city,
         data.country,
