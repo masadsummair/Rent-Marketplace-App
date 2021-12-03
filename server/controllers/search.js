@@ -7,7 +7,7 @@ const Search = async (req,res,next)=>
     let name='',min='',max='',cate='';
     if(data.name.length!=0)
     {
-        name+=` and I.item_name='${data.name}'`;
+        name+=` and I.item_name REGEXP '^${data.name}'`;
     }
     if(data.min.length!=0)
     {
