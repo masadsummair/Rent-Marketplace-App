@@ -1,149 +1,86 @@
-const db = require('../config/database.js');
-const bcrypt = require('bcrypt');
+const conn = require("../config/database.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-function checkEmail(res,email)
-{
-  for(let i=0;i<=res.length-1;i++)
-  {
-    if(email==(JSON.parse(JSON.stringify(res[i]))).email)
-    {
-      return true;
+const isAuth = (req, res, next) => {};
+
+const signup = async (req, res, next) => {
+  const data = req.body;
+
+  try {
+    let [result1] = await conn.execute("SELECT * FROM user WHERE email = ?", [
+      data.email,
+    ]);
+    if (result1.length > 0) {
+      res.status(202).json({
+        message: "User already exists",
+      });
+      return;
     }
+    let [result2] = await conn.execute("SELECT area_id FROM area where area_name=?", [
+      data.area,
+    ]);
+    if (result2.length <= 0) {
+      res.status(202).json({
+        message: "area is wrong",
+      });
+      return;
+    }
+    let hashedPassword = await bcrypt.hash(data.password, 12);
+    const [result3] = await conn.execute(
+      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area_id, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        data.email,
+        hashedPassword,
+        data.cnic,
+        data.firstName,
+        data.lastName,
+        parseInt(data.phone),
+        data.street,
+        parseInt(result2[0].area_id),
+        data.city,
+        data.country,
+        data.birthDate
+      ]
+    );
+    if (result3.affectedRows > 0) {
+      res.status(200).json({ message: "User Data Inserted Successfully" });
+    } else {
+      res.status(400).json({ message: "Error while inserting user data" });
+      throw new Error("Error while inserting user data");
+    }
+  } catch (err) {
+    console.log(err);
   }
-  return false;
-}
-function checkLoginData(res,data)
-{
-    for(let i=0;i<=res.length-1;i++)
-    {
-      let dbUser=JSON.parse(JSON.stringify(res[i]));
+};
 
-      if(data.email==dbUser.email)
-      {
-        
-        return new Promise(function(resolve, reject)
-        {
-          
-          bcrypt.compare(data.password, dbUser.password, (err, compareRes) => {
-            
-            if (err) { // error while comparing
-              reject();
-            } else if (compareRes) { // password match
-              // console.log(data);
-              resolve();
-            } else { // password doesnt match
-              reject();
-            };
-          });
-        });
-      }
-    }
-    return new Promise(function(resolve, reject)
-    {
-      reject();
-    });
-}
-const signup = (req,res,next)=>
-{
-  var data={};
-  data=req.body;
-  const user ={user_id:0,f_name:data.first_name,l_name:data.last_name,cnic:data.cnic,phone:data.phone,street:data.street,city:data.city,country:data.country,dob:data.birth_date,email:data.email,password:0};
+const login = async (req, res, next) => {
+  const data = req.body;
 
-  const data_into_user_and_login_table = new Promise((resolve,reject)=>
-  {
-    db.query("select * from logins",(err,result,fields)=>
-   {
-    if (err) {console.log("----sql error----");throw err; }
-     resolve(checkEmail(result,user.email));
-   });
-  })
-  data_into_user_and_login_table.then(
-    (status)=>
-    {
-      if(status==false)
-      {
-        const hash_password = new Promise((resolve,reject)=>
-        {
-          bcrypt.hash(req.body.password, 12, (err, passwordHash) => {
-            if (err) {
-               res.status(500).json({message: "couldnt hash the password"}); 
-            } else if (passwordHash) {
-              resolve(passwordHash);
-            }
-            });
-        });
-        const insert_into_user=new Promise((resolve,reject) =>
-        {
-          db.query(
-            `INSERT INTO users( first_name, last_name, cnic, phone, street, city, country, birth_date) VALUES ("${user.f_name}","${user.l_name}",${user.cnic},${user.phone},"${user.street}","${user.city}","${user.country}",${user.dob})`,
-            (err, result)=>
-            {
-              if (err) {console.log("----sql error----");throw err; }
-              console.log("1 record inserted in user table");
-              resolve("1 record inserted in user table");
-            });
-        });
-        const get_last_id=new Promise((resolve,reject) =>
-        {
-          db.query(
-          `SELECT MAX(user_id) as "m_id" FROM users`,
-            (err,result)=>
-          {
-            if (err) {console.log("----sql error----");throw err; }
-            console.log("get user id from user table");
-            resolve(JSON.parse(JSON.stringify(result[0])).m_id);
-          });
-        });
-        insert_into_user.then(
-          ()=>
-          {
-            get_last_id.then(
-              (u_id)=>
-              {
-                hash_password.then((passwordHash)=>
-                {
-                  db.query(
-                    `INSERT INTO logins(user_id, email, password) VALUES (${u_id},"${user.email}","${passwordHash}")`,
-                    (err, result)=>
-                    {
-                      if (err) {console.log("----sql error----");throw err; }
-                      console.log("1 record inserted in login table");
-                      res.status(200).json({"message":"user data insert to user and login table"});
-                    });
-                })
-              }
-            )
-          }
-        )
-      }else
-      {
-        res.status(200).json({"message":"Email already in use"});
-      }
+  let [results] = await conn.execute("SELECT * FROM user WHERE email = ?", [
+    data.email,
+  ]);
+
+  if (results.length > 0) {
+    let isCorrect = await bcrypt.compare(data.password, results[0].password);
+    if (isCorrect) {
+      const token = jwt.sign({ email: req.body.email }, "eventus", {
+        expiresIn: "1h",
+      });
+      console.log("user logged in");
+      res.status(200).json({ message: "user logged in", token: token });
+    } else {
+      console.log("Enter Correct Credentials");
+      res.status(202).json({ message: "Enter Correct Credentials" });
     }
-  );
-}
-const login = (req,res,next)=>
-{
-    let data={}
-    data=req.body;
-    db.query("select * from logins;" , function(err,result,fields)
-    {
-      if(err) throw err;
-      // console.log(data);
-      checkLoginData(result,data).then(
-        ()=>
-        {
-          res.status(200).json({"message":"login"});
-        },
-        ()=>
-        {
-          res.status(200).json({"message":"user not found"});
-        }
-        )
-    });
-}
-const isAuth = (req,res,next)=>
-{
-    
-}
-module.exports = { signup,login,isAuth};
+  } else {
+    console.log("User Not Found");
+    res.status(202).json({ message: "User Not Found" });
+  }
+};
+
+const logout = (req, res, next) => {
+  res.status(200).json({ message: "user logged out" });
+};
+
+module.exports = { signup, login, isAuth, logout };

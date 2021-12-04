@@ -2,6 +2,8 @@ const express = require("express");
 
 const { signup, login, isAuth } = require("../controllers/auth.js");
 
+const  { Area,Search,Category }  = require("../controllers/search.js");
+
 const {
   viewItem,
   addItem,
@@ -21,9 +23,15 @@ router.post("/deleteitem", deleteItem);
 
 router.post("/updateitem", updateItem);
 
-router.post("/viewitem", viewItem);
+router.get("/viewitem", viewItem);
 
 router.get("/private", isAuth);
+
+router.get("/search", Search);
+
+router.get("/category",Category);
+
+router.get("/area",Area);
 
 router.get("/public", (req, res, next) => {
   res.status(200).json({ message: "here is your public resoures" });

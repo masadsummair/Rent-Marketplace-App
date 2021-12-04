@@ -1,16 +1,10 @@
-const mysql = require("mysql");
-const config = {
+const mysql = require("mysql2");
+
+const conn = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "dbproject",
-};
-const db = mysql.createConnection(config);
-
-db.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  console.log("my sql connected");
+  database: "rentapp",
 });
-module.exports = db;
+
+module.exports = conn.promise();
