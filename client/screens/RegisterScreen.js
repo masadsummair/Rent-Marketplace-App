@@ -23,16 +23,17 @@ import API_URL from '../config/API_URL'
 const client=axios.create({baseURL:API_URL});
 
 const validationSchema = Yup.object().shape({
-  // email: Yup.string().required().email().label("Email"),
-  // password: Yup.string().required().min(3).label("Password"),
-  // firstName:Yup.string().required().label("First Name"),
-  // lastName:Yup.string().required().label("Last Name"),
-  // cnic:Yup.string().required().label("CNIC"),
-  // phone:Yup.string().required().label("Phone"),
-  // street:Yup.string().required().label("Street"),
-  // city:Yup.string().required().label("City"),
-  // country:Yup.string().required().label("Country"),
-  // birthDate:Yup.string().required().label("Birthdate"),
+  email: Yup.string().required().email().label("Email"),
+  password: Yup.string().required().min(3).label("Password"),
+  firstName:Yup.string().required().label("First Name"),
+  lastName:Yup.string().required().label("Last Name"),
+  cnic:Yup.string().required().label("CNIC"),
+  phone:Yup.string().required().label("Phone"),
+  street:Yup.string().required().label("Street"),
+  area:Yup.string().required().label("Area"),
+  city:Yup.string().required().label("City"),
+  country:Yup.string().required().label("Country"),
+  birthDate:Yup.string().required().label("Birthdate"),
 });
 
 export default function RegisterScreen({navigation}) {
@@ -46,7 +47,7 @@ export default function RegisterScreen({navigation}) {
         })
         if(res.status==200)
         {
-          navigation.navigate("Home");
+          navigation.push("Home");
         }
         else if(res.status==202)
         {
@@ -99,6 +100,7 @@ export default function RegisterScreen({navigation}) {
                 cnic: '',
                 phone: '',
                 street: '',
+                area:'',
                 city: '',
                 country: '',
                 birthDate: ''
@@ -195,6 +197,15 @@ export default function RegisterScreen({navigation}) {
                   <AppTextInput
                     autoCapitalize="none"
                     autoCorrect={false}
+                    onBlur={() => setFieldTouched("area")}
+                    placeholder="area"
+                    onChangeText={handleChange("area")}
+                    value={values.area}
+                  />
+                  <ErrorMessage error={errors.area} visible={touched.area} />
+                  <AppTextInput
+                    autoCapitalize="none"
+                    autoCorrect={false}
                     onBlur={() => setFieldTouched("country")}
                     placeholder="Country"
                     onChangeText={handleChange("country")}
@@ -213,7 +224,7 @@ export default function RegisterScreen({navigation}) {
                   <AppButton title="Sign Up" onPress={handleSubmit} />
                   <View style={{ flexDirection: "row", alignSelf: "center" }}>
                     <Text style={styles.text}>Already have account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                    <TouchableOpacity onPress={() => navigation.push("Login")}>
                       <Text style={[styles.text, { color: color.white }]}>
                         Sign In{" "}
                       </Text>
@@ -254,8 +265,6 @@ const styles = StyleSheet.create({
     color: color.primary,
     alignContent: "center",
   },
-<<<<<<< HEAD
-=======
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -294,5 +303,4 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center"
   }
->>>>>>> 70531703276dccc558f3846cfce39312701481b4
 });
