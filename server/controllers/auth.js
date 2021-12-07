@@ -40,7 +40,7 @@ const signup = async (req, res, next) => {
         parseInt(result2[0].area_id),
         data.city,
         data.country,
-        data.birthDate
+        data.birthDate,
       ]
     );
     if (result3.affectedRows > 0) {
