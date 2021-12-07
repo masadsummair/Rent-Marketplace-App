@@ -32,7 +32,7 @@ const signup = async (req, res, next) => {
         data.street,
         data.city,
         data.country,
-        data.birthDate
+        data.birthDate,
       ]
     );
     if (result2.affectedRows > 0) {

@@ -3,29 +3,10 @@ import { Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import ProductFeedScreen from "./ProductFeedScreen";
+import ItemFeedScreen from "./ItemFeedScreen";
+import UserItemScreen from "./UserItemScreen";
+import ContractsScreen from "./ContractsScreen";
 
-function SearchScreen() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#DAF0EE",
-      }}
-    >
-      <Text>Home!</Text>
-    </View>
-  );
-}
-function AddItemScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
 function ProfileScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -47,12 +28,14 @@ export default function App() {
             iconName = focused
               ? "search-circle-outline"
               : "search-circle-sharp";
-          } else if (route.name === "AddItem") {
+          } else if (route.name === "Items") {
             iconName = focused ? "add-circle-outline" : "add-circle-sharp";
           } else if (route.name === "Profile") {
             iconName = focused
               ? "person-circle-outline"
               : "person-circle-sharp";
+          } else if (route.name === "Contracts") {
+            iconName = focused ? "briefcase-outline" : "briefcase-sharp";
           }
 
           // You can return any component that you like here!
@@ -64,12 +47,17 @@ export default function App() {
     >
       <Tab.Screen
         name="Search"
-        component={ProductFeedScreen}
+        component={ItemFeedScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="AddItem"
-        component={AddItemScreen}
+        name="Items"
+        component={UserItemScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Contracts"
+        component={ContractsScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
