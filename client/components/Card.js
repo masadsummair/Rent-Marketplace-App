@@ -1,7 +1,16 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 
-export default function Card({ children, id }) {
+export default function Card({
+  id,
+  name,
+  description,
+  price,
+  imageURL = "https://picsum.photos/200",
+  category,
+  area,
+  duration = 23,
+}) {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -10,7 +19,35 @@ export default function Card({ children, id }) {
       style={styles.card}
     >
       {/* <View style={styles.card}> */}
-      <View style={styles.cardContent}>{children}</View>
+      <View style={styles.cardContent}>
+        <Image
+          source={{
+            uri: imageURL,
+          }}
+          resizeMode="contain"
+          style={{ width: "100%", height: 200 }}
+        />
+        <Text
+          style={{
+            ...styles.text,
+            borderColor: "#118AB2",
+            fontWeight: "bold",
+            color: "#118AB2",
+          }}
+        >
+          {"Rs " + price + "/hour"}
+        </Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: "grey",
+          }}
+        >
+          {name.slice(0, 20) + "..."}
+        </Text>
+
+        <Text style={{ borderColor: "#118AB2", marginTop: 5 }}>{area}</Text>
+      </View>
 
       {/* </View> */}
     </TouchableOpacity>
@@ -29,9 +66,12 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     marginHorizontal: 8,
     marginVertical: 8,
+    borderWidth: 6,
+    borderColor: "#fff",
+    borderBottomColor: "#118AB2",
   },
   cardContent: {
-    marginHorizontal: 18,
-    marginVertical: 20,
+    marginHorizontal: 16,
+    marginVertical: 12,
   },
 });

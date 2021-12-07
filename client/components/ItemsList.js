@@ -6,20 +6,20 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
-import Card from "../components/Card";
+import { ActivityIndicator } from "react-native-paper";
+import ItemsListCard from "./ItemsListCard";
 
-let data = [
+let ldata = [
   {
     id: 1,
-    name: "Product 1dsdsddssdsdsdsdsdsdsdsddsdsdsdsdsdsddsddsdddsdsdsdsdsdsddssdsdddsdds",
+    name: "Product 1",
     description:
       "Description of product 1 Description of product 1Description of product 1",
     price: "100",
     image: "https://picsum.photos/200",
     uri: "https://picsum.photos/seed/picsum/200/200/",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 2,
@@ -29,8 +29,6 @@ let data = [
     price: "200",
     image: "https://picsum.photos/200",
     uri: "https://picsum.photos/seed/picsum/200/200/",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 3,
@@ -39,8 +37,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "300",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 4,
@@ -49,8 +45,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "400",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 5,
@@ -59,8 +53,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "500",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 6,
@@ -69,8 +61,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "600",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 7,
@@ -80,8 +70,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "700",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 8,
@@ -90,8 +78,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "800",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 9,
@@ -100,8 +86,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "900",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 10,
@@ -110,8 +94,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "1000",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 11,
@@ -120,8 +102,6 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "1100",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
   {
     id: 12,
@@ -130,33 +110,71 @@ let data = [
       "Description of product 1 Description of product 1Description of product 1",
     price: "1200",
     image: "https://picsum.photos/200",
-    area: "Area 1",
-    category: "Category 1",
   },
 ];
 
-export default function List({ category, area, min, max, query }) {
-  useEffect(() => {
-    console.log(category, area, min, max, query);
-  }, [category, area, min, max, query]);
+export default function ItemsList({ reload, reloadSetter, viewItem }) {
+  const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  return (
+  useEffect(() => {
+    // Will rerender the list only if new data is added using the modal form
+    if (!reload) {
+      return false;
+    }
+
+    setLoading(true);
+    loadListData();
+    setLoading(false);
+    reloadSetter(false);
+  }, [reload]);
+
+  let deleteItem = (id) => {
+    //Set Loader to True
+    setLoading(true);
+
+    //Delete the item from the list
+
+    //Load the data again
+    loadListData();
+
+    //Set Loader to False
+    setLoading(false);
+  };
+
+  let loadListData = () => {
+    console.log("Loading...");
+
+    //Load data here
+
+    setRefreshing(false);
+    setData([...ldata]);
+  };
+
+  return loading ? (
+    <ActivityIndicator />
+  ) : (
     <FlatList
-      numColumns={2}
       style={{
         width: "100%",
       }}
       data={data}
       renderItem={({ item, index }) => (
-        <Card
+        <ItemsListCard
           id={index}
           name={item.name}
-          area={item.area}
+          description={item.description}
           price={item.price}
-          category={item.category}
+          imageURL={item.uri}
+          deleteItem={deleteItem}
+          viewItem={viewItem}
         />
       )}
       keyExtractor={(item) => item.id.toString()}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={loadListData} />
+      }
     />
   );
 }
