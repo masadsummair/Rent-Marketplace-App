@@ -22,10 +22,10 @@ app.listen(port, () => {
 });
 
 //for mobile
-//open cmd and type ipconfig and copy ipv4 and 
+// open cmd and type ipconfig and copy ipv4 and 
 //           paste to I
 //                    I
 //                    V         and paste in client/config/API_URL.js  IP(variable)
 // app.listen(port,'192.168.1.5', () => {
-//   console.log(`App listening at http://192.168.1.5:${port}`);
+//   console.log(`App listening at http://192.168.43.105:${port}`);
 // });
