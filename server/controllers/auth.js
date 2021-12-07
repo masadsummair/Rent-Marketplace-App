@@ -11,17 +11,24 @@ const signup = async (req, res, next) => {
     let [result1] = await conn.execute("SELECT * FROM user WHERE email = ?", [
       data.email,
     ]);
-    console.log(result1.length);
     if (result1.length > 0) {
       res.status(202).json({
         message: "User already exists",
       });
       return;
     }
+    let [result2] = await conn.execute("SELECT area_id FROM area where area_name=?", [
+      data.area,
+    ]);
+    if (result2.length <= 0) {
+      res.status(202).json({
+        message: "area is wrong",
+      });
+      return;
+    }
     let hashedPassword = await bcrypt.hash(data.password, 12);
-    console.log(data);
-    const [result2] = await conn.execute(
-      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?)",
+    const [result3] = await conn.execute(
+      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area_id, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
       [
         data.email,
         hashedPassword,
@@ -30,12 +37,13 @@ const signup = async (req, res, next) => {
         data.lastName,
         parseInt(data.phone),
         data.street,
+        parseInt(result2[0].area_id),
         data.city,
         data.country,
         data.birthDate,
       ]
     );
-    if (result2.affectedRows > 0) {
+    if (result3.affectedRows > 0) {
       res.status(200).json({ message: "User Data Inserted Successfully" });
     } else {
       res.status(400).json({ message: "Error while inserting user data" });

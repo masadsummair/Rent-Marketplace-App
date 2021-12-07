@@ -21,7 +21,7 @@ app.use("/images", express.static("images"));
 //   console.log(`App listening at :http://localhost:${port}`);
 // });
 
-//for mobile
+
 //open cmd and type ipconfig and copy ipv4 and
 //           paste to I
 //                    I
@@ -29,3 +29,4 @@ app.use("/images", express.static("images"));
 app.listen(port, "192.168.0.104", () => {
   console.log(`App listening at http://192.168.0.104:${port}`);
 });
+

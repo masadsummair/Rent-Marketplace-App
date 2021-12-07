@@ -254,6 +254,8 @@ const styles = StyleSheet.create({
     color: color.primary,
     alignContent: "center",
   },
+<<<<<<< HEAD
+=======
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -292,4 +294,5 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center"
   }
+>>>>>>> 70531703276dccc558f3846cfce39312701481b4
 });
