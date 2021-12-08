@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  StatusBar,
   RefreshControl,
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
@@ -157,7 +158,7 @@ export default function ItemsList({ reload, reloadSetter, viewItem }) {
   ) : (
     <FlatList
       style={{
-        width: "100%",
+        width: "100%",marginTop: StatusBar.currentHeight + 10,
       }}
       data={data}
       renderItem={({ item, index }) => (

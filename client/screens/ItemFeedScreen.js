@@ -43,19 +43,32 @@ export default function ItemFeedScreen() {
   const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    // const client = axios.create({
-    //   baseURL: API_URL,
-    // });
+    const client = axios.create({
+      baseURL: API_URL,
+    });
+    const dareas = [""];
+    const dcategories = [""];
+    client.get('/area')
+      .then((response) =>{
+        // console.log(response["data"].length)
+        let area_data=response["data"];
+        for(let i=0; i<area_data.length; i++)
+        {
+          dareas.push(area_data[i].area_name)
+        }
+      });
+    client.get('/category')
+      .then((response) =>{
+        // console.log(response["data"].length)
+        let area_data=response["data"];
+        for(let i=0; i<area_data.length; i++)
+        {
+          dcategories.push(area_data[i].cate_name)
+        }
+      });
 
-    // client
-    //   .get("https://jsonplaceholder.typicode.com/todos")
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     setCategories(response.data);
-    //   });
-
-    const dareas = ["", "Shadman", "Nazimabad", "Gulshan", "DHA"];
-    const dcategories = ["", "Electronics", "Fashion", "Home", "Books"];
+    
+    
     setAreas(dareas);
     setCategories(dcategories);
 

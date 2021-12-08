@@ -11,7 +11,6 @@ const Stack = createStackNavigator();
 export default function AuthNavigator() {
   return (
     <Stack.Navigator>
-      
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
@@ -27,7 +26,7 @@ export default function AuthNavigator() {
         component={RegisterScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
+            <Stack.Screen
         name="Home"
         component={BottomTab}
         options={{ headerShown: false }}

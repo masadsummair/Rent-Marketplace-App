@@ -19,6 +19,7 @@ import {
   Modal,
   Portal,
   Provider,
+  Dialog
 } from "react-native-paper";
 import ItemsList from "../components/ItemsList";
 import * as ImagePicker from "expo-image-picker";
@@ -200,13 +201,15 @@ export default function UserItemScreen() {
   return (
     <View style={styles.container}>
       <ItemsList reload={reload} reloadSetter={setReload} viewItem={viewItem} />
-
+      
       {/* Add Item Modal */}
+      
       <Modal
         dismissable={false}
         visible={visible}
         contentContainerStyle={styles.modal}
       >
+        
         <Image
           source={{ uri: imageURI }}
           style={{
@@ -287,7 +290,6 @@ export default function UserItemScreen() {
             setItemPrice(text);
           }}
         />
-
         <SelectDropdown
           data={dcategories}
           // value={pselectedCategory}
@@ -313,7 +315,7 @@ export default function UserItemScreen() {
           rowStyle={styles.dropdown1RowStyle}
           rowTextStyle={styles.dropdown1RowTxtStyle}
         />
-        {!showUpdateModal ? (
+                {!showUpdateModal ? (
           <TouchableOpacity
             style={{
               flexDirection: "row",
@@ -432,6 +434,8 @@ export default function UserItemScreen() {
             )}
           </TouchableOpacity>
         )}
+
+
       </Modal>
 
       <FAB
@@ -464,17 +468,13 @@ export default function UserItemScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: StatusBar.currentHeight + 10,
-    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#DAF0EE",
-    // backgroundColor: "#fff",
   },
   fab: {
     position: "absolute",
-
     margin: 16,
     right: 0,
     bottom: 0,
@@ -491,7 +491,6 @@ const styles = StyleSheet.create({
 
   //Dropdown Styling
   dropdown1BtnStyle: {
-    width: "95%",
     height: 50,
     backgroundColor: "#FFF",
     borderRadius: 2,

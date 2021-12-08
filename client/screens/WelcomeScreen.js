@@ -8,7 +8,7 @@ export default function WelcomeScreen({navigation}) {
        <ImageBackground
        style={styles.background}
     //    source={require('../assets/images/welcome_background.png')}
-    source={{uri:`${API_URL}/images/abc.jpg`}}
+            source={{uri:`${API_URL}/images/abc.jpg`}}
        >
            <View style={styles.welcometext}>
                 <Text style={styles.tagline}>You Can’t Buy it But You Can Rent it

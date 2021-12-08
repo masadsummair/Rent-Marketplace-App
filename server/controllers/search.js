@@ -9,11 +9,11 @@ const Search = async (req,res,next)=>
     {
         name+=` and I.item_name REGEXP '^${data.name}'`;
     }
-    if(data.min.length!=0)
+    if(data.min!=0)
     {
         min+=` and I.price>=${data.min}`
     }
-    if(data.max.length!=0)
+    if(data.max!=0)
     {
         max+=` and I.price<=${data.max}`
     }

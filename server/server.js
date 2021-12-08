@@ -17,16 +17,16 @@ app.use(express.static("public"));
 app.use("/images", express.static("images"));
 
 // for localhost
-// app.listen(port, () => {
-//   console.log(`App listening at :http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`App listening at :http://localhost:${port}`);
+});
 
 
 //open cmd and type ipconfig and copy ipv4 and
 //           paste to I
 //                    I
 //                    V         and paste in client/config/API_URL.js  IP(variable)
-app.listen(port, "192.168.0.104", () => {
-  console.log(`App listening at http://192.168.0.104:${port}`);
-});
+// app.listen(port, "192.168.233.216", () => {
+//   console.log(`App listening at http://192.168.233.216:${port}`);
+// });
 

@@ -233,7 +233,6 @@ export default function RegisterScreen({navigation}) {
                 </>
               )}
             </Formik>
-          
         </Screen>
     </ScrollView>
     </ImageBackground>
