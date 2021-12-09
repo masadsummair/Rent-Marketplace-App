@@ -17,6 +17,8 @@ const  { Area,Search,Category }  = require("../controllers/search.js");
 
 const  { getImage,saveImage }  = require("../controllers/image.js");
 
+const { initiateContract,viewContract,startContract,endContract,rating }= require("../controllers/contract.js");
+
 const {
   viewItem,
   addItem,
@@ -32,13 +34,11 @@ router.post("/signup", signup);
 
 router.post("/additem", addItem);
 
-router.post("/deleteitem", deleteItem);
+router.delete("/deleteitem", deleteItem);
 
-router.post("/updateitem", updateItem);
+router.put("/updateitem", updateItem);
 
 router.get("/viewitem", viewItem);
-
-router.get("/private", isAuth);
 
 router.get("/search", Search);
 
@@ -50,8 +50,16 @@ router.get("/images",getImage)
 
 router.post("/images",upload,saveImage)
 
-router.get("/public", (req, res, next) => {
-  res.status(200).json({ message: "here is your public resoures" });
-});
+router.post("/contract/start",initiateContract)
+
+router.get("/contract/view",viewContract)
+
+router.put("/contract/accept",startContract)
+
+router.put("/contract/end",endContract)
+
+router.post("/contract/rating",rating)
+
+router.get("/private", isAuth);
 
 module.exports = router;

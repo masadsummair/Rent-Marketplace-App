@@ -22,7 +22,7 @@ const viewItem =async (req,res,next)=>
         if (result1.length > 0) {
             res.status(200).json(result1);
         }else{
-            res.status(200).json({"message":"no item found"});
+            res.status(200).json([]);
         }
     }else
     {
@@ -55,9 +55,10 @@ const addItem = async (req,res,next)=>
                 ]);
                 if (cate_id.length > 0) {
                     const [iresult] = await conn.execute(
-                        "INSERT INTO item(item_name,price,image_url,cate_id) VALUES(?,?,?,?)",
+                        "INSERT INTO item(item_name,description,price,image_url,cate_id) VALUES(?,?,?,?)",
                         [
                             data.itemName,
+                            data.description,
                             parseInt(data.price),
                             data.imageUrl,
                             parseInt(cate_id[0]["cate_id"])
@@ -71,12 +72,13 @@ const addItem = async (req,res,next)=>
                             parseInt(iresult.insertId)
                         ]
                         );
-                    if(iresult.affectedRows > 0 ) {
+                    if(iresult.affectedRows > 0 && result2.affectedRows >0)
+                    {
                         console.log("1 record inserted in item table");
                         res.status(200).json({"message":"1 item insert to items table"});
                     } else {
                         res.status(400).json({ message: "Error while inserting item data" });
-                        throw new Error("Error while inserting user data");
+                        throw new Error("Error while inserting item data");
                     }
                 }else{
                     res.status(200).json({"message":"category not match"});
@@ -120,8 +122,8 @@ const updateItem = async (req,res,next)=>
                     data.category_name,
                 ]);
                 if (cate_id.length > 0) {
-                     let [iresult] = await conn.execute("UPDATE item SET item_name=?,availability=?,price=?,image_url=?,cate_id=? WHERE item_id=?", [
-                        data.item_name,data.availability,parseInt(data.price),data.image_url,parseInt(cate_id[0]["cate_id"]),data.item_id 
+                     let [iresult] = await conn.execute("UPDATE item SET item_name=?,description=?,availability=?,price=?,image_url=?,cate_id=? WHERE item_id=?", [
+                        data.item_name,data.description,data.availability,parseInt(data.price),data.image_url,parseInt(cate_id[0]["cate_id"]),data.item_id 
                     ]);
                     if(iresult.affectedRows > 0 ) {
                          console.log("1 record updated in item table");
@@ -155,8 +157,8 @@ const deleteItem = async (req,res,next)=>
     let [result1]=await conn.execute("DELETE FROM user_item WHERE item_id=? and user_id=? ",[data.item_id,data.user_id]);
     let [result2]=await conn.execute("DELETE FROM item WHERE item_id=? ",[data.item_id]);
     if (result1.affectedRows > 0 && result2.affectedRows>0) {
-        console.log("1 row delete from items table");
-        res.status(200).json({"message":"1 row delete from items table"});
+        console.log("1 row delete from items table and user_item table");
+        res.status(200).json({"message":"1 row delete from items table user_item table"});
     }else{
         console.log("nothing to delete");
         res.status(200).json({"message":"nothing to delete"});
