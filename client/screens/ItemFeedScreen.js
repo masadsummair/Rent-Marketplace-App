@@ -29,7 +29,7 @@ export default function ItemFeedScreen() {
   const [areas, setAreas] = React.useState([]);
   const [showFilters, setShowFilters] = React.useState(false);
   const [filterText, setFilterText] = React.useState("Show Filters");
-  const [reload, setReload] = React.useState(false); //New
+  const [reload, setReload] = React.useState(true); //New
 
   const [query, setQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("");
@@ -40,8 +40,8 @@ export default function ItemFeedScreen() {
   const [pquery, psetQuery] = React.useState("");
   const [pselectedCategory, psetSelectedCategory] = React.useState("");
   const [pselectedArea, psetSelectedArea] = React.useState("");
-  const [pminPrice, psetMinPrice] = React.useState(0);
-  const [pmaxPrice, psetMaxPrice] = React.useState(0);
+  const [pminPrice, psetMinPrice] = React.useState("");
+  const [pmaxPrice, psetMaxPrice] = React.useState("");
 
 //new
   //Set Modal Data - New
@@ -53,13 +53,22 @@ export default function ItemFeedScreen() {
   const [itemCategory, setItemCategory] = React.useState("");
   const [itemArea, setItemArea] = React.useState("");
   const [itemOwner, setItemOwner] = React.useState("");
+  const [itemDays, setItemDays] = React.useState("");
   const [visible, setVisible] = React.useState(false);
   //Set Modal Data - New
 
   const [loading, setLoading] = React.useState(false);
   //new
-  let viewItem = (id) => {
+  let viewItem = (id,name,username,description,price,imageURL) => {
     console.log(id);
+    setItemDescription(id);
+    setItemName(name);
+    setItemDescription(description);
+    setItemPrice(price);
+    setItemImage(imageURL);
+    setItemOwner(username);
+    setItemDays("");
+    console.log(username);
     setVisible(true);
   };
   //new
@@ -94,8 +103,8 @@ export default function ItemFeedScreen() {
 
     psetSelectedArea("");
     psetSelectedCategory("");
-    psetMinPrice(0);
-    psetMaxPrice(0);
+    psetMinPrice("");
+    psetMaxPrice("");
     psetQuery("");
     console.log("Result Changed");
   }, []);
@@ -185,7 +194,7 @@ export default function ItemFeedScreen() {
               marginHorizontal={5}
               keyboardType="number-pad"
               value={String(pminPrice)}
-              onChangeText={(text) => psetMinPrice(text)}
+              onChangeText={(value) => {(value>0)?psetMinPrice(value):psetMinPrice("");}}
             />
 
             <TextInput
@@ -202,7 +211,7 @@ export default function ItemFeedScreen() {
               marginHorizontal={5}
               keyboardType="number-pad"
               value={String(pmaxPrice)}
-              onChangeText={(text) => psetMaxPrice(text)}
+              onChangeText={(value) => {(value>0)?psetMaxPrice(value):psetMaxPrice("");}}
             />
           </View>
         </View>
@@ -284,7 +293,7 @@ export default function ItemFeedScreen() {
         contentContainerStyle={styles.modal}
       >
         <Image
-          source={{ uri: "https://picsum.photos/seed/picsum/200/200/" }}
+          source={{ uri: itemImage }}
           style={{
             borderWidth: 1,
             borderColor: "black",
@@ -293,7 +302,6 @@ export default function ItemFeedScreen() {
             marginVertical: 5,
           }}
         />
-
         <Text
           style={{
             borderWidth: 1,
@@ -304,9 +312,10 @@ export default function ItemFeedScreen() {
             width: "95%",
             backgroundColor: "#fff",
             marginHorizontal: 5,
+            
           }}
         >
-          sddsdd
+          {itemName}
         </Text>
 
         <Text
@@ -322,7 +331,7 @@ export default function ItemFeedScreen() {
             marginHorizontal: 5,
           }}
         >
-          Hello dsssssssssssssssssssssssssssssssss sddshsgdsgdh sdhgsdhgdh
+          {itemDescription}
         </Text>
 
         <View
@@ -343,8 +352,9 @@ export default function ItemFeedScreen() {
             placeholder="Enter Days"
             keyboardType="number-pad"
             marginHorizontal={5}
-            value={String(() => {})}
-            onChangeText={() => {}}
+            value={String(itemDays)}
+            onChangeText={(value) => {(value>0)?setItemDays(value):setItemDays("");}}
+
           />
           <View
             style={{
@@ -367,7 +377,7 @@ export default function ItemFeedScreen() {
                 fontSize: 12,
               }}
             >
-              You will pay 2000 Rs to uzair
+              You will pay {(itemDays=="")?itemPrice:itemPrice*itemDays} Rs to {itemOwner}
             </Text>
           </View>
         </View>

@@ -51,6 +51,7 @@ export default function RegisterScreen({ navigation }) {
 //       let msg = JSON.parse(res["request"]["_response"]).message;
 //       setMessage(msg);
 //       setModalVisible(true);
+//      };
 //new
   const signup=async (values,actions)=>
     {
@@ -72,11 +73,10 @@ export default function RegisterScreen({ navigation }) {
         actions.resetForm({values: ''});
         actions.setSubmitting(false);
 
-    }
+    };
 
     actions.resetForm({ values: "" });
     actions.setSubmitting(false);
-  };
   return (
     <ImageBackground
       style={styles.background}
@@ -110,7 +110,7 @@ export default function RegisterScreen({ navigation }) {
         </View>
         <Screen style={styles.container}>
 //new
-//           <Text style={styles.heading}>Register</Text>
+{/* //           <Text style={styles.heading}>Register</Text>
 //           <Formik
 //             initialValues={{
 //               email: "",
@@ -145,7 +145,7 @@ export default function RegisterScreen({ navigation }) {
 //                   onChangeText={handleChange("email")}
 //                   value={values.email}
 //                 />
-//                 <ErrorMessage error={errors.email} visible={touched.email} />
+//                 <ErrorMessage error={errors.email} visible={touched.email} /> */}
 //new
             <Text style={styles.heading}>Register</Text>
             <Formik
@@ -200,7 +200,7 @@ export default function RegisterScreen({ navigation }) {
                 />
 
 //new
-//                 <AppTextInput
+{/* //                 <AppTextInput
 //                   autoCapitalize="none"
 //                   autoCorrect={false}
 //                   onBlur={() => setFieldTouched("firstName")}
@@ -295,7 +295,7 @@ export default function RegisterScreen({ navigation }) {
 //                 </View>
 //               </>
 //             )}
-//           </Formik>
+//           </Formik> */}
 //new
                   <AppTextInput
                     autoCapitalize="none"

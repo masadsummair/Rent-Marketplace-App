@@ -68,23 +68,11 @@ export default function ItemsListCard({
         </View>
 
         <View style={styles.cardFooter}>
-
-//           {availabity === "Available" ? (
-//             <Text style={{ ...styles.cardFooterDuration, color: "green" }}>
-//               Available
-//             </Text>
-//           ) : (
-//             <Text style={{ ...styles.cardFooterDuration, color: "#fa9f47" }}>
-//               Rented Out
-//             </Text>
-//           )}
-//           <Text style={styles.cardFooterPrice}>Price: {price}</Text>
-//           <Text style={styles.cardFooterCategory}>Category: {category}</Text>
-//         </View>
-//         <View style={styles.cardFooter}>
-//           <Text style={styles.cardFooterCategory}>Price: {price}$</Text>
-
+         
+          <Text style={styles.cardFooterCategory}>Category: {category} </Text>
+          <Text style={styles.cardFooterPrice}>Price: {price}</Text>
         </View>
+
       </TouchableOpacity>
       {availability == "available" ? (
         <Button
@@ -98,7 +86,7 @@ export default function ItemsListCard({
           Delete
         </Button>
       ) : (
-        <Text style={styles.cardFooterNA}>Rented</Text>
+        <Text style={{...styles.cardFooterNA,color: "#fa9f47"}}>Rented</Text>
       )}
       {showDialog ? (
         <Text style={styles.cardFooterNA}>Cant update</Text>
@@ -131,22 +119,22 @@ const styles = StyleSheet.create({
   cardFooter: {
     marginHorizontal: 18,
     marginBottom: 20,
-    borderColor: "black",
+    borderColor: "#ddd",
     borderWidth: 1,
     flexDirection: "row",
+    paddingVertical:5,
     justifyContent: "space-between",
+    paddingHorizontal:5,
   },
   cardFooterCategory: {
     textAlign: "left",
-    padding: 10,
     color: "black",
-    width: "100%",
+    width: "80%",
     fontSize: 12,
   },
   cardFooterNA: {
     textAlign: "center",
-    padding: 10,
-    color: "black",
+    color: "red",
     width: "100%",
     fontSize: 16,
     borderTopColor: "#ddd",
@@ -154,9 +142,9 @@ const styles = StyleSheet.create({
   },
   cardFooterPrice: {
     textAlign: "left",
-    color: "black",
-    paddingLeft: 22,
-    width: "50%",
+    color: "green",
+    width: "45%",
+    fontWeight: "bold",
     fontSize: 12,
   },
 });

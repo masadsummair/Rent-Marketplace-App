@@ -129,31 +129,34 @@ let data = [
   },
 ];
 
-export default function List({
-  category,
-  area,
-  min,
-  max,
-  query,
-  viewItem,
-  reload, //New
-  setReload, //New
-}) {
-  useEffect(() => {
-    //New
-    if (!reload) {
-      return;
-    }
-    //New
+// export default function List({
+//   category,
+//   area,
+//   min,
+//   max,
+//   query,
+//   viewItem,
+//   reload, //New
+//   setReload, //New
+// }) {
+//   useEffect(() => {
+//     //New
+//     if (!reload) {
+//       return;
+//     }
+//     //New
 
-    console.log(category, area, min, max, query);
-    setReload(false);
-  }, [category, area, min, max, query, reload]);
-//new
+//     console.log(category, area, min, max, query);
+//     setReload(false);
+//   }, [category, area, min, max, query, reload]);
+// //new
 import axios from "axios";
-export default function List({ userId, category, area, min, max, query }) {
+export default function List({ userId, category, area, min, max, query,viewItem,reload,setReload }) {
   const [itemdata, setitemdata] = React.useState([]);
   useEffect(() => {
+    if (!reload) {
+            return;
+    }
     const client = axios.create({
       baseURL: API_URL,
     });
@@ -172,6 +175,7 @@ export default function List({ userId, category, area, min, max, query }) {
                 : "notfound.png";
             data1.push({
               userid: search_data[i].user_id,
+              username: search_data[i].username,
               id: search_data[i].item_id,
               name: search_data[i].item_name,
               description: search_data[i].description,
@@ -187,6 +191,8 @@ export default function List({ userId, category, area, min, max, query }) {
           console.log(response);
         }
       );
+      console.log(category, area, min, max, query);
+      setReload(false);
   }, [category, area, min, max, query]);
 
 
@@ -201,8 +207,10 @@ export default function List({ userId, category, area, min, max, query }) {
         <Card
           userid={item.userid}
           id={item.id}
+          username={item.username}
           name={item.name}
           area={item.area}
+          description={item.description}
           price={item.price}
           category={item.category}
           viewItem={viewItem} //New

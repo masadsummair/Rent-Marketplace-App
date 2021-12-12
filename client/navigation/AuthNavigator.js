@@ -10,13 +10,13 @@ const Stack = createStackNavigator();
 export default function AuthNavigator() {
   return (
     <Stack.Navigator>
-//new
-//       <Stack.Screen
-//         name="Home"
-//         component={BottomTab}
-//         options={{ headerShown: false }}
-//       />
-//new
+{/* //new */}
+       <Stack.Screen
+         name="Home"
+         component={BottomTab}
+        options={{ headerShown: false }}
+      />
+{/* //new */}
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}

@@ -5,6 +5,7 @@ export default function Card({
   userid,
   id,
   name,
+  username,
   description,
   price,
   imageURL,
@@ -17,9 +18,8 @@ export default function Card({
     <TouchableOpacity
       onPress={() => {
 
-        viewItem(id); //New
+        viewItem(id,name,username,description,price,imageURL); //New
 
-    
         console.log("card pushed" + id + " userid:" + userid);
 
     
