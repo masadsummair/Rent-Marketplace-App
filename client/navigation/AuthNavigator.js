@@ -5,12 +5,16 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import Home from "../screens/HomeScreen";
 import BottomTab from "../screens/BottomTab";
-
 const Stack = createStackNavigator();
 
 export default function AuthNavigator() {
   return (
     <Stack.Navigator>
+                  <Stack.Screen
+        name="Home"
+        component={BottomTab}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
@@ -24,11 +28,6 @@ export default function AuthNavigator() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ headerShown: false }}
-      />
-            <Stack.Screen
-        name="Home"
-        component={BottomTab}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

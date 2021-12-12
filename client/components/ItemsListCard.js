@@ -2,28 +2,47 @@ import React from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-
+import API_URL from "../config/API_URL";
 export default function ItemsListCard({
   id,
   name,
   description,
   price,
-  imageURL = "https://picsum.photos/200",
-  duration = 23,
+  imageURL,
+  category,
+  availability,
   deleteItem,
   viewItem,
 }) {
+  const [showDialog, setShowDialog] = React.useState(false);
+  const showModal = () => {
+    setShowDialog(true);
+    setTimeout(() => {
+      setShowDialog(false);
+    }, 1000);
+  };
   return (
     <View style={styles.card}>
       <TouchableOpacity
         onPress={() => {
-          viewItem(id);
+          viewItem(
+            id,
+            name,
+            description,
+            price,
+            imageURL,
+            category,
+            availability
+          );
+          if (availability != "available") {
+            showModal();
+          }
         }}
       >
         <View style={styles.cardContent}>
           <Image
             source={{
-              uri: imageURL,
+              uri: API_URL + "/images/" + imageURL,
             }}
             style={{ width: 100, height: 100 }}
           />
@@ -43,21 +62,31 @@ export default function ItemsListCard({
         </View>
 
         <View style={styles.cardFooter}>
-          <Text style={styles.cardFooterDuration}>Duration: {duration}</Text>
-          <Text style={styles.cardFooterPrice}>Price: {price}</Text>
+          <Text style={styles.cardFooterCategory}>Category: {category}</Text>
+        </View>
+        <View style={styles.cardFooter}>
+          <Text style={styles.cardFooterCategory}>Price: {price}$</Text>
         </View>
       </TouchableOpacity>
-
-      <Button
-        icon="delete"
-        color="#c70000"
-        mode="outlined"
-        onPress={() => {
-          deleteItem(id);
-        }}
-      >
-        Delete
-      </Button>
+      {availability == "available" ? (
+        <Button
+          icon="delete"
+          color="#c70000"
+          mode="outlined"
+          onPress={() => {
+            deleteItem(id, imageURL);
+          }}
+        >
+          Delete
+        </Button>
+      ) : (
+        <Text style={styles.cardFooterNA}>Rented</Text>
+      )}
+      {showDialog ? (
+        <Text style={styles.cardFooterNA}>Cant update</Text>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
@@ -89,17 +118,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  cardFooterDuration: {
+  cardFooterCategory: {
     textAlign: "left",
     padding: 10,
     color: "black",
-    width: "50%",
+    width: "100%",
     fontSize: 12,
   },
-  cardFooterPrice: {
-    textAlign: "right",
+  cardFooterNA: {
+    textAlign: "center",
     padding: 10,
     color: "black",
+    width: "100%",
+    fontSize: 16,
+    borderTopColor: "#ddd",
+    borderTopWidth: 1,
+  },
+  cardFooterPrice: {
+    textAlign: "left",
+    color: "black",
+    paddingLeft: 22,
     width: "50%",
     fontSize: 12,
   },
