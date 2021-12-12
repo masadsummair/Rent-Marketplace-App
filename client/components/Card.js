@@ -11,11 +11,18 @@ export default function Card({
   category,
   area,
   duration = 23,
+  viewItem, //New
 }) {
   return (
     <TouchableOpacity
       onPress={() => {
+
+        viewItem(id); //New
+
+    
         console.log("card pushed" + id + " userid:" + userid);
+
+    
       }}
       style={styles.card}
     >

@@ -1,8 +1,14 @@
 import React from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import color from "../theme/color";
+
+
 import { useNavigation } from "@react-navigation/native";
 import API_URL from "../config/API_URL";
+
 export default function ItemsListCard({
   id,
   name,
@@ -62,10 +68,22 @@ export default function ItemsListCard({
         </View>
 
         <View style={styles.cardFooter}>
-          <Text style={styles.cardFooterCategory}>Category: {category}</Text>
-        </View>
-        <View style={styles.cardFooter}>
-          <Text style={styles.cardFooterCategory}>Price: {price}$</Text>
+
+//           {availabity === "Available" ? (
+//             <Text style={{ ...styles.cardFooterDuration, color: "green" }}>
+//               Available
+//             </Text>
+//           ) : (
+//             <Text style={{ ...styles.cardFooterDuration, color: "#fa9f47" }}>
+//               Rented Out
+//             </Text>
+//           )}
+//           <Text style={styles.cardFooterPrice}>Price: {price}</Text>
+//           <Text style={styles.cardFooterCategory}>Category: {category}</Text>
+//         </View>
+//         <View style={styles.cardFooter}>
+//           <Text style={styles.cardFooterCategory}>Price: {price}$</Text>
+
         </View>
       </TouchableOpacity>
       {availability == "available" ? (

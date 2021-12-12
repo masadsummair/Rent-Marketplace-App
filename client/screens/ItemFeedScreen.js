@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Searchbar } from "react-native-paper";
+import { Searchbar, Modal, Button as RNButton } from "react-native-paper";
+
 import {
   StyleSheet,
   View,
@@ -13,11 +14,12 @@ import {
   ActivityIndicator,
   SafeAreaView,
   StatusBar,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import API_URL from "../config/API_URL";
 import color from "../theme/color";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import List from "../components/List";
@@ -27,6 +29,7 @@ export default function ItemFeedScreen() {
   const [areas, setAreas] = React.useState([]);
   const [showFilters, setShowFilters] = React.useState(false);
   const [filterText, setFilterText] = React.useState("Show Filters");
+  const [reload, setReload] = React.useState(false); //New
 
   const [query, setQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("");
@@ -39,6 +42,27 @@ export default function ItemFeedScreen() {
   const [pselectedArea, psetSelectedArea] = React.useState("");
   const [pminPrice, psetMinPrice] = React.useState(0);
   const [pmaxPrice, psetMaxPrice] = React.useState(0);
+
+//new
+  //Set Modal Data - New
+  const [itemId, setItemId] = React.useState("");
+  const [itemName, setItemName] = React.useState("");
+  const [itemPrice, setItemPrice] = React.useState(0);
+  const [itemDescription, setItemDescription] = React.useState("");
+  const [itemImage, setItemImage] = React.useState("");
+  const [itemCategory, setItemCategory] = React.useState("");
+  const [itemArea, setItemArea] = React.useState("");
+  const [itemOwner, setItemOwner] = React.useState("");
+  const [visible, setVisible] = React.useState(false);
+  //Set Modal Data - New
+
+  const [loading, setLoading] = React.useState(false);
+  //new
+  let viewItem = (id) => {
+    console.log(id);
+    setVisible(true);
+  };
+  //new
 
   useEffect(() => {
     const client = axios.create({
@@ -80,7 +104,7 @@ export default function ItemFeedScreen() {
     <View style={styles.container}>
       <Searchbar
         placeholder="Type product name"
-        style={{ marginHorizontal: 10, marginVertical: 5 }}
+        style={{ marginHorizontal: 10, marginVertical: 5, elevation: 0 }}
         onChangeText={
           // (query) => requestTimer(query)
           (query) => psetQuery(query)
@@ -209,6 +233,7 @@ export default function ItemFeedScreen() {
             setSelectedArea(pselectedArea);
             setMinPrice(pminPrice);
             setMaxPrice(pmaxPrice);
+            setReload(true); //New
           }}
         >
           <FontAwesome name="search" size={30} color={color.primary} />
@@ -248,7 +273,143 @@ export default function ItemFeedScreen() {
         query={query}
         min={minPrice}
         max={maxPrice}
+        viewItem={viewItem}
+        reload={reload}
+        setReload={setReload}
       />
+
+      <Modal
+        dismissable={false}
+        visible={visible}
+        contentContainerStyle={styles.modal}
+      >
+        <Image
+          source={{ uri: "https://picsum.photos/seed/picsum/200/200/" }}
+          style={{
+            borderWidth: 1,
+            borderColor: "black",
+            width: 200,
+            height: 200,
+            marginVertical: 5,
+          }}
+        />
+
+        <Text
+          style={{
+            borderWidth: 1,
+            borderColor: "black",
+            padding: 10,
+            marginVertical: 5,
+            textAlign: "center",
+            width: "95%",
+            backgroundColor: "#fff",
+            marginHorizontal: 5,
+          }}
+        >
+          sddsdd
+        </Text>
+
+        <Text
+          value={() => {}}
+          style={{
+            borderWidth: 1,
+            borderColor: "black",
+            padding: 10,
+            marginVertical: 5,
+            textAlign: "center",
+            width: "95%",
+            backgroundColor: "#fff",
+            marginHorizontal: 5,
+          }}
+        >
+          Hello dsssssssssssssssssssssssssssssssss sddshsgdsgdh sdhgsdhgdh
+        </Text>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <TextInput
+            borderWidth={1}
+            borderColor="black"
+            padding={10}
+            marginVertical={5}
+            height={50}
+            width="25%"
+            backgroundColor={"#fff"}
+            placeholder="Enter Days"
+            keyboardType="number-pad"
+            marginHorizontal={5}
+            value={String(() => {})}
+            onChangeText={() => {}}
+          />
+          <View
+            style={{
+              marginVertical: 5,
+              marginHorizontal: 5,
+              flexDirection: "row",
+              borderWidth: 1,
+              borderColor: "green",
+              padding: 10,
+              width: "65%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="cash-outline" size={20} color="green" />
+            <Text
+              style={{
+                textTransform: "uppercase",
+                marginLeft: 5,
+                fontSize: 12,
+              }}
+            >
+              You will pay 2000 Rs to uzair
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginVertical: 5,
+          }}
+        >
+          <RNButton
+            width="45%"
+            icon="check"
+            color="#00ab66"
+            mode="contained"
+            onPress={() => {
+              //Initiate the contract here
+              //You can find all the data about the product using the Modal Data state
+
+              //Close the modal
+              setVisible(false);
+
+              //Setting reload to true will reload the list
+              setReload(true);
+            }}
+          >
+            Rent Item
+          </RNButton>
+
+          <RNButton
+            marginLeft={10}
+            width="45%"
+            icon="close"
+            color="#c70000"
+            mode="contained"
+            onPress={() => {
+              setVisible(false);
+            }}
+          >
+            Close
+          </RNButton>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -261,6 +422,17 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#DAF0EE",
+  },
+
+  modal: {
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    marginTop: StatusBar.currentHeight + 10,
+    backgroundColor: "white",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 50,
+    elevation: 1,
   },
 
   minMaxContainer: {
