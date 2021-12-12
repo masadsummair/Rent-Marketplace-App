@@ -17,9 +17,10 @@ const signup = async (req, res, next) => {
       });
       return;
     }
-    let [result2] = await conn.execute("SELECT area_id FROM area where area_name=?", [
-      data.area,
-    ]);
+    let [result2] = await conn.execute(
+      "SELECT area_id FROM area where area_name=?",
+      [data.area]
+    );
     if (result2.length <= 0) {
       res.status(202).json({
         message: "area is wrong",

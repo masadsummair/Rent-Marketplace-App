@@ -40,35 +40,25 @@ export default function ItemFeedScreen() {
   const [pminPrice, psetMinPrice] = React.useState(0);
   const [pmaxPrice, psetMaxPrice] = React.useState(0);
 
-  const [loading, setLoading] = React.useState(false);
-
   useEffect(() => {
     const client = axios.create({
       baseURL: API_URL,
     });
     const dareas = [""];
     const dcategories = [""];
-    client.get('/area')
-      .then((response) =>{
-        // console.log(response["data"].length)
-        let area_data=response["data"];
-        for(let i=0; i<area_data.length; i++)
-        {
-          dareas.push(area_data[i].area_name)
-        }
-      });
-    client.get('/category')
-      .then((response) =>{
-        // console.log(response["data"].length)
-        let area_data=response["data"];
-        for(let i=0; i<area_data.length; i++)
-        {
-          dcategories.push(area_data[i].cate_name)
-        }
-      });
+    client.get("/area").then((response) => {
+      let area_data = response["data"];
+      for (let i = 0; i < area_data.length; i++) {
+        dareas.push(area_data[i].area_name);
+      }
+    });
+    client.get("/category").then((response) => {
+      let category_data = response["data"];
+      for (let i = 0; i < category_data.length; i++) {
+        dcategories.push(category_data[i].cate_name);
+      }
+    });
 
-    
-    
     setAreas(dareas);
     setCategories(dcategories);
 
@@ -83,28 +73,8 @@ export default function ItemFeedScreen() {
     psetMinPrice(0);
     psetMaxPrice(0);
     psetQuery("");
-
-    // const client = axios.create({ baseURL: API_URL });
-    // client
-    //   .get(`https://jsonplaceholder.typicode.com/todos/${search}`)
-    //   .then((res) => {
-    //     setProducts([...res.data]);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    //Setting Categories
-
     console.log("Result Changed");
   }, []);
-
-  // let typingTimer;
-  // const requestTimer = (query) => {
-  //   clearTimeout(typingTimer);
-  //   typingTimer = setTimeout(() => {
-  //     setSearch(query);
-  //   }, 1000);
-  // };
 
   return (
     <View style={styles.container}>
@@ -272,6 +242,7 @@ export default function ItemFeedScreen() {
       </View>
 
       <List
+        userId={1} //userid come from session
         category={selectedCategory}
         area={selectedArea}
         query={query}
