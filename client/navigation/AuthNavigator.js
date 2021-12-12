@@ -12,11 +12,6 @@ export default function AuthNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
-        component={BottomTab}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
         options={{ headerShown: false }}

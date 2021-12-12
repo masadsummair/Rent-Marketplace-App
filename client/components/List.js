@@ -135,10 +135,26 @@ let data = [
   },
 ];
 
-export default function List({ category, area, min, max, query }) {
+export default function List({
+  category,
+  area,
+  min,
+  max,
+  query,
+  viewItem,
+  reload, //New
+  setReload, //New
+}) {
   useEffect(() => {
+    //New
+    if (!reload) {
+      return;
+    }
+    //New
+
     console.log(category, area, min, max, query);
-  }, [category, area, min, max, query]);
+    setReload(false);
+  }, [category, area, min, max, query, reload]);
 
   return (
     <FlatList
@@ -154,6 +170,7 @@ export default function List({ category, area, min, max, query }) {
           area={item.area}
           price={item.price}
           category={item.category}
+          viewItem={viewItem} //New
         />
       )}
       keyExtractor={(item) => item.id.toString()}

@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AuthNavigator from "./navigation/AuthNavigator";
+import HomeNavigator from "./navigation/HomeNavigator";
 import { useFonts } from "expo-font";
 
 export default function App() {
@@ -9,9 +10,10 @@ export default function App() {
     Roboto: require("./assets/fonts/Roboto-Black.ttf"),
   });
 
+  let sign = false;
   return (
     <NavigationContainer>
-      <AuthNavigator />
+      {sign ? <AuthNavigator /> : <HomeNavigator />}
     </NavigationContainer>
   );
 }
