@@ -1,21 +1,29 @@
 const express = require("express");
 
-const multer = require('multer');
+const multer = require("multer");
 const storage = multer.diskStorage({
   destination(req, file, callback) {
-    callback(null, './images');
+    callback(null, "./images");
   },
   filename(req, file, callback) {
-    callback(null, `${file.fieldname}_${Date.now()}_${file.originalname}`);
+    callback(null, file.originalname);
   },
 });
-const upload = multer({storage}).single('image');
+const upload = multer({ storage }).single("image");
 
 const { signup, login, isAuth } = require("../controllers/auth.js");
 
-const  { Area,Search,Category }  = require("../controllers/search.js");
+const { Area, Search, Category } = require("../controllers/search.js");
 
-const  { getImage,saveImage }  = require("../controllers/image.js");
+const { getImage, saveImage, deleteImage, updateImage } = require("../controllers/image.js");
+
+const {
+  initiateContract,
+  viewContract,
+  startContract,
+  endContract,
+  rating,
+} = require("../controllers/contract.js");
 
 const {
   viewItem,
@@ -32,26 +40,36 @@ router.post("/signup", signup);
 
 router.post("/additem", addItem);
 
-router.post("/deleteitem", deleteItem);
+router.delete("/deleteitem", deleteItem);
 
-router.post("/updateitem", updateItem);
+router.put("/updateitem", updateItem);
 
 router.get("/viewitem", viewItem);
 
-router.get("/private", isAuth);
-
 router.get("/search", Search);
 
-router.get("/category",Category);
+router.get("/category", Category);
 
-router.get("/area",Area);
+router.get("/area", Area);
 
-router.get("/images",getImage)
+router.get("/images", getImage);
 
-router.post("/images",upload,saveImage)
+router.post("/images", upload, saveImage);
 
-router.get("/public", (req, res, next) => {
-  res.status(200).json({ message: "here is your public resoures" });
-});
+router.put('/images',upload,updateImage);
+
+router.delete('/images',deleteImage);
+
+router.post("/contract/start", initiateContract);
+
+router.get("/contract/view", viewContract);
+
+router.put("/contract/accept", startContract);
+
+router.put("/contract/end", endContract);
+
+router.post("/contract/rating", rating);
+
+router.get("/private", isAuth);
 
 module.exports = router;

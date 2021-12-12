@@ -25,9 +25,11 @@ export default function LoginScreen({navigation}) {
         {
             ...values,
         })
+        console.log(values);
         if(res.status==200)
         {
-          navigation.navigate("Home");
+          console.log("asad");
+          navigation.push("Home");
         }
         else if(res.status==202)
         {
@@ -101,13 +103,13 @@ export default function LoginScreen({navigation}) {
                     />
                     <ErrorMessage error={errors.password} visible={touched.password} />
                     <TouchableOpacity style={{}} >
-                        <Text style={[styles.text,{textAlign:"right",paddingRight:10}]} onPress={() => navigation.navigate("Welcome")} >Forget Passowrd ?</Text>
+                        <Text style={[styles.text,{textAlign:"right",paddingRight:10}]} onPress={() => navigation.push("Welcome")} >Forget Passowrd ?</Text>
                     </TouchableOpacity>
                     
                     <AppButton title="Sign In" onPress={handleSubmit} />
                     <View style={{ flexDirection: "row", alignSelf: "center" }}>
                     <Text style={styles.text}>Don't have account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                    <TouchableOpacity onPress={() => navigation.push("Register")}>
                       <Text style={[styles.text, { color: color.white }]}>
                         Sign Up{" "}
                       </Text>

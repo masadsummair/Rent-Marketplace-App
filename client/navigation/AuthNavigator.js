@@ -5,18 +5,23 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import Home from "../screens/HomeScreen";
 import BottomTab from "../screens/BottomTab";
-
 const Stack = createStackNavigator();
 
 export default function AuthNavigator() {
   return (
     <Stack.Navigator>
+//new
+//       <Stack.Screen
+//         name="Home"
+//         component={BottomTab}
+//         options={{ headerShown: false }}
+//       />
+//new
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="Login"
         component={LoginScreen}

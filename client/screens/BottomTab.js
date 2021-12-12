@@ -49,6 +49,7 @@ export default function App() {
         name="Search"
         component={ItemFeedScreen}
         options={{ headerShown: false }}
+        
       />
       <Tab.Screen
         name="Items"

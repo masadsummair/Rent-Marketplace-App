@@ -2,11 +2,12 @@ import React from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 
 export default function Card({
+  userid,
   id,
   name,
   description,
   price,
-  imageURL = "https://picsum.photos/200",
+  imageURL,
   category,
   area,
   duration = 23,
@@ -15,7 +16,13 @@ export default function Card({
   return (
     <TouchableOpacity
       onPress={() => {
+
         viewItem(id); //New
+
+    
+        console.log("card pushed" + id + " userid:" + userid);
+
+    
       }}
       style={styles.card}
     >
