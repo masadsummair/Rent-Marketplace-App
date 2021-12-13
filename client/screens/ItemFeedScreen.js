@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Searchbar, Modal, Button as RNButton } from "react-native-paper";
-
 import {
   StyleSheet,
   View,
@@ -43,8 +42,6 @@ export default function ItemFeedScreen() {
   const [pminPrice, psetMinPrice] = React.useState("");
   const [pmaxPrice, psetMaxPrice] = React.useState("");
 
-//new
-  //Set Modal Data - New
   const [itemId, setItemId] = React.useState("");
   const [itemName, setItemName] = React.useState("");
   const [itemPrice, setItemPrice] = React.useState(0);
@@ -53,30 +50,33 @@ export default function ItemFeedScreen() {
   const [itemCategory, setItemCategory] = React.useState("");
   const [itemArea, setItemArea] = React.useState("");
   const [itemOwner, setItemOwner] = React.useState("");
-  const [itemDays, setItemDays] = React.useState("");
+  const [itemOwnerId, setItemOwnerId] = React.useState(0);
+  const [itemDays, setItemDays] = React.useState("1");
   const [visible, setVisible] = React.useState(false);
-  //Set Modal Data - New
 
-  const [loading, setLoading] = React.useState(false);
-  //new
-  let viewItem = (id,name,username,description,price,imageURL) => {
+  const userId=1;//come from session
+  const client = axios.create({
+    baseURL: API_URL,
+  });
+
+  let viewItem = (userid,id,name,username,description,price,imageURL) => {
     console.log(id);
+    setItemId(id);
+    setItemOwnerId(userid)
     setItemDescription(id);
     setItemName(name);
     setItemDescription(description);
     setItemPrice(price);
     setItemImage(imageURL);
     setItemOwner(username);
-    setItemDays("");
+    setItemDays("1");
     console.log(username);
     setVisible(true);
   };
-  //new
+
 
   useEffect(() => {
-    const client = axios.create({
-      baseURL: API_URL,
-    });
+
     const dareas = [""];
     const dcategories = [""];
     client.get("/area").then((response) => {
@@ -84,13 +84,13 @@ export default function ItemFeedScreen() {
       for (let i = 0; i < area_data.length; i++) {
         dareas.push(area_data[i].area_name);
       }
-    });
+    },(response)=>{console.log(response)});
     client.get("/category").then((response) => {
       let category_data = response["data"];
       for (let i = 0; i < category_data.length; i++) {
         dcategories.push(category_data[i].cate_name);
       }
-    });
+    },(response)=>{console.log(response["request"]["_response"])});
 
     setAreas(dareas);
     setCategories(dcategories);
@@ -109,13 +109,24 @@ export default function ItemFeedScreen() {
     console.log("Result Changed");
   }, []);
 
+  let RentItem=()=>
+  {
+    client.post("/contract/start",{
+      "from":itemOwnerId,
+      "to":userId,
+      "item_id":itemId,
+      "days":itemDays,
+      "price":itemDays*itemPrice
+    } )
+      .then((response) => {console.log(response["request"]["_response"])},(response)=>{console.log(response["request"]["_response"])});
+  }
+
   return (
     <View style={styles.container}>
       <Searchbar
         placeholder="Type product name"
         style={{ marginHorizontal: 10, marginVertical: 5, elevation: 0 }}
         onChangeText={
-          // (query) => requestTimer(query)
           (query) => psetQuery(query)
         }
         value={pquery}
@@ -125,8 +136,6 @@ export default function ItemFeedScreen() {
         <View>
           <SelectDropdown
             data={categories}
-            // value={pselectedCategory}
-            // defaultValueByIndex={1}
             defaultValue={pselectedCategory}
             onSelect={(selectedItem, index) => {
               psetSelectedCategory(selectedItem);
@@ -276,7 +285,7 @@ export default function ItemFeedScreen() {
       </View>
 
       <List
-        userId={1} //userid come from session
+        userId={userId} 
         category={selectedCategory}
         area={selectedArea}
         query={query}
@@ -395,7 +404,7 @@ export default function ItemFeedScreen() {
             onPress={() => {
               //Initiate the contract here
               //You can find all the data about the product using the Modal Data state
-
+              RentItem();
               //Close the modal
               setVisible(false);
 

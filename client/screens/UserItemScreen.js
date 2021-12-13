@@ -57,6 +57,7 @@ export default function UserItemScreen() {
 
   async function uploadData() {
     if (showUpdateModal) {
+      let imageFileName = null;
       if (updateImage) {
         await client
           .delete("/images", {
@@ -73,7 +74,7 @@ export default function UserItemScreen() {
               return;
             }
           );
-        let imageFileName = null;
+
         if (imageName != null) {
           imageFileName = `${itemName}_${Date.now()}.png`;
           const data = new FormData();
@@ -101,12 +102,12 @@ export default function UserItemScreen() {
         }
       }
       let itemData = {
-        user_id: "1", // userid come from session
+        user_id: "1", //come from session
         item_id: itemid,
         item_name: itemName,
         description: itemDescription,
         price: itemPrice,
-        image_url: updateImage ? imageFileName : imageName,
+        image_url: imageFileName != null ? imageFileName : imageName,
         category_name: defaultitemCategory,
       };
       await client.put("/updateitem", itemData).then(
@@ -148,7 +149,7 @@ export default function UserItemScreen() {
       }
 
       let itemData = {
-        user_id: "1", // userid come from session
+        user_id: "1", //come from session
         itemName: itemName,
         description: itemDescription,
         price: itemPrice,
@@ -165,13 +166,12 @@ export default function UserItemScreen() {
           console.log(response["request"]["_response"]);
         }
       );
-      setImageURI(null);
-      setItemName("");
-      setItemDescription("");
-      setItemPrice(0);
-      setItemCategory("");
     }
-
+    setImageURI(null);
+    setItemName("");
+    setItemDescription("");
+    setItemPrice(0);
+    setItemCategory("");
     setReload(true);
   }
 
@@ -222,7 +222,6 @@ export default function UserItemScreen() {
     <View style={styles.container}>
       <ItemsList reload={reload} reloadSetter={setReload} viewItem={viewItem} />
 
-      {/* Add Item Modal */}
 
       {visible ? (
         <Modal>
@@ -370,7 +369,6 @@ export default function UserItemScreen() {
                   setSubmitting(true);
 
                   //Send the request to the server
-
                   //After getting the result, set the loader to false
                   if (showUpdateModal) {
                     console.log("error in add modal");
@@ -387,13 +385,6 @@ export default function UserItemScreen() {
                     //Set reload to true, to render the list again
                     setReload(true);
                   }
-
-                  //Clearing All Fields
-                  // setImageURI(null);
-                  // setItemName("");
-                  // setItemDescription("");
-                  // setItemPrice(0);
-                  // setItemCategory("");
                 }}
               >
                 {submitting ? (
@@ -446,11 +437,6 @@ export default function UserItemScreen() {
                   setReload(true);
 
                   //Clearing All Fields
-                  // setImageURI(null);
-                  // setItemName("");
-                  // setItemDescription("");
-                  // setItemPrice(0);
-                  // setItemCategory("");
                 }}
               >
                 {submitting ? (
@@ -538,7 +524,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
 
-  //Dropdown Styling
   dropdown1BtnStyle: {
     height: 50,
     backgroundColor: "#FFF",

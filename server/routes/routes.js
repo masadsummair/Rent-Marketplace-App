@@ -21,6 +21,8 @@ const {
   initiateContract,
   viewContract,
   startContract,
+  rejectContract,
+  retrunItem,
   endContract,
   rating,
 } = require("../controllers/contract.js");
@@ -65,6 +67,10 @@ router.post("/contract/start", initiateContract);
 router.get("/contract/view", viewContract);
 
 router.put("/contract/accept", startContract);
+
+router.put("/contract/reject", rejectContract);
+
+router.put("/contract/returnitem", retrunItem);
 
 router.put("/contract/end", endContract);
 

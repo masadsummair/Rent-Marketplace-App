@@ -54,18 +54,19 @@ const initiateContract=async (req,res,next)=>
         try {
             let status=await check_contract(data.from,data.to,data.item_id);
             console.log(status);
-            if(status.length==0)
+            if(status.length==0 || status=='completed')
             {
                 if(await check_itemAvailability(data.item_id))
                 {
                     if(data.days>0)
                     {
                         const [result]=await conn.execute(
-                            `INSERT INTO contract( provider_id, consumer_id, item_id, end_time ) VALUES (?,?,?,DATE_add(DATE_add(DATE_add(CURDATE(), INTERVAL ${data.days-2} DAY), INTERVAL 23 hour), INTERVAL 59 minute) )`,
+                            `INSERT INTO contract( provider_id, consumer_id, item_id,total_price, end_time ) VALUES (?,?,?,?,DATE_add(DATE_add(DATE_add(CURDATE(), INTERVAL ${data.days} DAY), INTERVAL 23 hour), INTERVAL 59 minute) )`,
                             [
                                 data.from,
                                 data.to,
                                 data.item_id,
+                                data.price
                             ]
                             );
                         if(result.affectedRows > 0 ) {
@@ -104,10 +105,11 @@ const initiateContract=async (req,res,next)=>
 const viewContract = async (req, res, next)=>
 {
     const data=req.query;
-    let status=(data.status!='')? `and status='${data.status}'` : '' ;
+    console.log(data.status==undefined)
+    let status=(data.status!='' && data.status!=undefined)? `and status='${data.status}'` : '' ;
     let [result]=await conn.execute(
-        `SELECT contract_id, provider_id, consumer_id, item_id, rating_id, DATEDIFF(end_time, start_time) AS days, status,rating_status FROM contract WHERE  provider_id=? ${status}`,
-        [data.id]);
+        `SELECT C.contract_id, C.provider_id,CONCAT(P.firstname, ' ', P.lastname) AS provider_name, C.consumer_id,CONCAT(CO.firstname, ' ', CO.lastname) AS consumer_name,C.item_id,I.item_name, C.rating_id,C.total_price, DATEDIFF(C.end_time, C.start_time) AS days, C.status,C.rating_status FROM contract C join item I on C.item_id = I.item_id join user P on C.provider_id = P.user_id join user CO  on C.consumer_id = CO.user_id WHERE  C.provider_id=? or C.consumer_id=? ${status}`,
+        [data.id,data.id]);
         
     if (result.length > 0)
     {
@@ -115,7 +117,7 @@ const viewContract = async (req, res, next)=>
     }else
     {
         console.log(`${data.status} contract not found`);
-        res.status(200).json({"message":`${data.status} contract not found`});
+        res.status(200).json({});
     }
 }
 const startContract= async (req, res, next)=>
@@ -124,7 +126,35 @@ const startContract= async (req, res, next)=>
     if(await verifyContract(data.contract_id,"pending"))
     {
         try {
-            let [iresult] = await conn.execute("UPDATE contract SET status='active' WHERE contract_id=?", [
+            let [result1] = await conn.execute("UPDATE contract SET status='active' WHERE contract_id=?", [
+               data.contract_id 
+            ]);
+            let [result2] = await conn.execute("UPDATE item SET availability='not available' WHERE item_id=?", [
+                data.item_id
+             ]);
+            if(result1.affectedRows > 0  && result2.affectedRows > 0) {
+                 console.log("1 record updated in contract table");
+                res.status(200).json({"message":"1 contract update to items table"});
+             } else {
+                 res.status(400).json({ message: "Error while inserting contract data" });
+                 throw new Error("Error while inserting contract data");
+             }
+        } catch (error) {
+            console.log(error);
+            res.status(200).json(error);
+        }
+    }else
+    {
+        res.status(200).json({"message":"wrong contract"});
+    }
+}
+const rejectContract= async (req, res, next)=>
+{
+    const data=req.body;
+    if(await verifyContract(data.contract_id,"pending"))
+    {
+        try {
+            let [iresult] = await conn.execute("UPDATE contract SET status='rejected' WHERE contract_id=?", [
                data.contract_id 
             ]);
             if(iresult.affectedRows > 0 ) {
@@ -143,13 +173,42 @@ const startContract= async (req, res, next)=>
         res.status(200).json({"message":"wrong contract"});
     }
 }
-const endContract = async (req, res, next)=>
+const retrunItem= async (req, res, next)=>
 {
     const data=req.body;
     if(await verifyContract(data.contract_id,"active"))
     {
         try {
-            let [iresult] = await conn.execute("UPDATE contract SET status='complete' WHERE contract_id=?", [
+            let [result1] = await conn.execute("UPDATE contract SET status='onhold' WHERE contract_id=?", [
+               data.contract_id 
+            ]);
+            let [result2] = await conn.execute("UPDATE item SET availability='available' WHERE item_id=?", [
+                data.item_id
+             ]);
+            if(result1.affectedRows > 0 && result2.affectedRows > 0) {
+                 console.log("1 record updated in contract table");
+                res.status(200).json({"message":"1 contract update to items table"});
+             } else {
+                 res.status(400).json({ message: "Error while inserting contract data" });
+                 throw new Error("Error while inserting contract data");
+             }
+        } catch (error) {
+            console.log(error);
+            res.status(200).json(error);
+        }
+    }else
+    {
+        res.status(200).json({"message":"wrong contract"});
+    }
+}
+
+const endContract = async (req, res, next)=>
+{
+    const data=req.body;
+    if(await verifyContract(data.contract_id,"onhold"))
+    {
+        try {
+            let [iresult] = await conn.execute("UPDATE contract SET status='completed' WHERE contract_id=?", [
                data.contract_id 
             ]);
             if(iresult.affectedRows > 0 ) {
@@ -182,7 +241,7 @@ const rating = async (req, res,next) =>
             return true;
         }
     }
-    if(await verifyContract(data.contract_id,"complete"))
+    if(await verifyContract(data.contract_id,"completed"))
     {
         if(await alreadyRated())
         {
@@ -197,7 +256,7 @@ const rating = async (req, res,next) =>
                     );
         
                     const [result1] = await conn.execute(
-                    "UPDATE contract SET rating_id=? ,rating_status='rated' WHERE contract_id=? and status='complete' ",
+                    "UPDATE contract SET rating_id=? ,rating_status='rated' WHERE contract_id=? and status='completed' ",
                     [
                         result.insertId,
                         data.contract_id
@@ -213,7 +272,7 @@ const rating = async (req, res,next) =>
                 }else
                 {
                     const [result1] = await conn.execute(
-                    "UPDATE contract SET  rating_status='rated' WHERE contract_id=? and status='complete' and rating_status='not rated' ",
+                    "UPDATE contract SET  rating_status='rated' WHERE contract_id=? and status='completed' and rating_status='not rated' ",
                     [
                         data.contract_id
                     ]
@@ -243,4 +302,4 @@ const rating = async (req, res,next) =>
         res.status(200).json({"message":"wrong contract"});
     }
 }
-module.exports={ initiateContract,viewContract,startContract,endContract,rating };
+module.exports={ initiateContract,viewContract,startContract,rejectContract,retrunItem,endContract,rating };

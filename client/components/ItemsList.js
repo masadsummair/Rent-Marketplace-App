@@ -30,7 +30,7 @@ export default function ItemsList({ reload, reloadSetter, viewItem }) {
     setLoading(true);
     //Delete the item from the list
     let deleteItemData = {
-      user_id: 1, //get from session
+      user_id: 1, //come from session
       item_id: id,
     };
     await client.delete("/deleteitem", { data: deleteItemData }).then(
@@ -66,7 +66,7 @@ export default function ItemsList({ reload, reloadSetter, viewItem }) {
   let loadListData = () => {
     console.log("Loading...");
 
-    let userId = 1;
+    let userId = 3;
     client.get(`/viewitem?userId=${userId}`).then((response) => {
       let userItem = response["data"];
       let formatUserItem = [];
@@ -85,7 +85,8 @@ export default function ItemsList({ reload, reloadSetter, viewItem }) {
         });
       }
       setData(formatUserItem);
-    });
+    },
+    (response)=>{console.log(response["request"]["_response"])});
 
     setRefreshing(false);
     // setData(ldata);

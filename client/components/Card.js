@@ -9,24 +9,16 @@ export default function Card({
   description,
   price,
   imageURL,
-  category,
   area,
-  duration = 23,
-  viewItem, //New
+  viewItem, 
 }) {
   return (
     <TouchableOpacity
       onPress={() => {
-
-        viewItem(id,name,username,description,price,imageURL); //New
-
-        console.log("card pushed" + id + " userid:" + userid);
-
-    
+        viewItem(userid,id,name,username,description,price,imageURL); //New
       }}
       style={styles.card}
     >
-      {/* <View style={styles.card}> */}
       <View style={styles.cardContent}>
         <Image
           source={{
@@ -56,8 +48,6 @@ export default function Card({
 
         <Text style={{ borderColor: "#118AB2", marginTop: 5 }}>{area}</Text>
       </View>
-
-      {/* </View> */}
     </TouchableOpacity>
   );
 }

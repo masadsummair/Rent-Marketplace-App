@@ -1,11 +1,10 @@
 const express = require("express");
-const conn = require("./config/database.js");
 const router = require("./routes/routes.js");
 const { json, urlencoded } = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-const port = 8000;
+const port = 9000;
 
 //middleware
 app.use(cors()); //making cross-domain requests possible

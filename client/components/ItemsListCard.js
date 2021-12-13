@@ -1,12 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
-
-import Ionicons from "react-native-vector-icons/Ionicons";
-import color from "../theme/color";
-
-
-import { useNavigation } from "@react-navigation/native";
 import API_URL from "../config/API_URL";
 
 export default function ItemsListCard({
