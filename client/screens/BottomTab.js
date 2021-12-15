@@ -6,14 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ItemFeedScreen from "./ItemFeedScreen";
 import UserItemScreen from "./UserItemScreen";
 import ContractsScreen from "./ContractsScreen";
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+import ProfileScreen from "./ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +42,6 @@ export default function App() {
         name="Search"
         component={ItemFeedScreen}
         options={{ headerShown: false }}
-        
       />
       <Tab.Screen
         name="Items"

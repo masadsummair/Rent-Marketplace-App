@@ -24,6 +24,6 @@ app.use("/images", express.static("images"));
 //           paste to I
 //                    I
 //                    V         and paste in client/config/API_URL.js  IP(variable)
-app.listen(port, "192.168.1.8", () => {
-  console.log(`App listening at http://192.168.1.8:${port}`);
+app.listen(port, "192.168.0.104", () => {
+  console.log(`App listening at http://192.168.0.104:${port}`);
 });
