@@ -62,11 +62,9 @@ export default function ItemsListCard({
         </View>
 
         <View style={styles.cardFooter}>
-         
           <Text style={styles.cardFooterCategory}>Category: {category} </Text>
           <Text style={styles.cardFooterPrice}>Price: {price}</Text>
         </View>
-
       </TouchableOpacity>
       {availability == "available" ? (
         <Button
@@ -80,10 +78,22 @@ export default function ItemsListCard({
           Delete
         </Button>
       ) : (
-        <Text style={{...styles.cardFooterNA,color: "#fa9f47"}}>Rented</Text>
+        <Button
+          icon="lock"
+          color="#fa9f47"
+          mode="outlined"
+          disabled={true}
+          onPress={() => {
+            deleteItem(id, imageURL);
+          }}
+        >
+          Rented
+        </Button>
       )}
       {showDialog ? (
-        <Text style={styles.cardFooterNA}>Cant update</Text>
+        <Text style={{ ...styles.cardFooterNA, padding: 10, color: "#fa9f47" }}>
+          Cant Update
+        </Text>
       ) : (
         <></>
       )}
@@ -116,9 +126,9 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderWidth: 1,
     flexDirection: "row",
-    paddingVertical:5,
+    paddingVertical: 5,
     justifyContent: "space-between",
-    paddingHorizontal:5,
+    paddingHorizontal: 5,
   },
   cardFooterCategory: {
     textAlign: "left",

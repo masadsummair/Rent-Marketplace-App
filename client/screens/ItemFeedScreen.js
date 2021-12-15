@@ -22,6 +22,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import List from "../components/List";
+import { AuthContext } from "../components/context";
 
 export default function ItemFeedScreen() {
   const [categories, setCategories] = React.useState([]);
@@ -53,16 +54,17 @@ export default function ItemFeedScreen() {
   const [itemOwnerId, setItemOwnerId] = React.useState(0);
   const [itemDays, setItemDays] = React.useState("1");
   const [visible, setVisible] = React.useState(false);
+  const { userId } = React.useContext(AuthContext);
 
-  const userId=1;//come from session
+  // const userId = 3; //come from session
   const client = axios.create({
     baseURL: API_URL,
   });
 
-  let viewItem = (userid,id,name,username,description,price,imageURL) => {
+  let viewItem = (userid, id, name, username, description, price, imageURL) => {
     console.log(id);
     setItemId(id);
-    setItemOwnerId(userid)
+    setItemOwnerId(userid);
     setItemDescription(id);
     setItemName(name);
     setItemDescription(description);
@@ -74,23 +76,31 @@ export default function ItemFeedScreen() {
     setVisible(true);
   };
 
-
   useEffect(() => {
-
     const dareas = [""];
     const dcategories = [""];
-    client.get("/area").then((response) => {
-      let area_data = response["data"];
-      for (let i = 0; i < area_data.length; i++) {
-        dareas.push(area_data[i].area_name);
+    client.get("/area").then(
+      (response) => {
+        let area_data = response["data"];
+        for (let i = 0; i < area_data.length; i++) {
+          dareas.push(area_data[i].area_name);
+        }
+      },
+      (response) => {
+        console.log(response);
       }
-    },(response)=>{console.log(response)});
-    client.get("/category").then((response) => {
-      let category_data = response["data"];
-      for (let i = 0; i < category_data.length; i++) {
-        dcategories.push(category_data[i].cate_name);
+    );
+    client.get("/category").then(
+      (response) => {
+        let category_data = response["data"];
+        for (let i = 0; i < category_data.length; i++) {
+          dcategories.push(category_data[i].cate_name);
+        }
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
       }
-    },(response)=>{console.log(response["request"]["_response"])});
+    );
 
     setAreas(dareas);
     setCategories(dcategories);
@@ -109,26 +119,31 @@ export default function ItemFeedScreen() {
     console.log("Result Changed");
   }, []);
 
-  let RentItem=()=>
-  {
-    client.post("/contract/start",{
-      "from":itemOwnerId,
-      "to":userId,
-      "item_id":itemId,
-      "days":itemDays,
-      "price":itemDays*itemPrice
-    } )
-      .then((response) => {console.log(response["request"]["_response"])},(response)=>{console.log(response["request"]["_response"])});
-  }
+  let RentItem = () => {
+    client
+      .post("/contract/start", {
+        from: itemOwnerId,
+        to: userId,
+        item_id: itemId,
+        days: itemDays,
+        price: itemDays * itemPrice,
+      })
+      .then(
+        (response) => {
+          console.log(response["request"]["_response"]);
+        },
+        (response) => {
+          console.log(response["request"]["_response"]);
+        }
+      );
+  };
 
   return (
     <View style={styles.container}>
       <Searchbar
         placeholder="Type product name"
         style={{ marginHorizontal: 10, marginVertical: 5, elevation: 0 }}
-        onChangeText={
-          (query) => psetQuery(query)
-        }
+        onChangeText={(query) => psetQuery(query)}
         value={pquery}
       />
 
@@ -203,7 +218,9 @@ export default function ItemFeedScreen() {
               marginHorizontal={5}
               keyboardType="number-pad"
               value={String(pminPrice)}
-              onChangeText={(value) => {(value>0)?psetMinPrice(value):psetMinPrice("");}}
+              onChangeText={(value) => {
+                value > 0 ? psetMinPrice(value) : psetMinPrice("");
+              }}
             />
 
             <TextInput
@@ -220,7 +237,9 @@ export default function ItemFeedScreen() {
               marginHorizontal={5}
               keyboardType="number-pad"
               value={String(pmaxPrice)}
-              onChangeText={(value) => {(value>0)?psetMaxPrice(value):psetMaxPrice("");}}
+              onChangeText={(value) => {
+                value > 0 ? psetMaxPrice(value) : psetMaxPrice("");
+              }}
             />
           </View>
         </View>
@@ -285,7 +304,7 @@ export default function ItemFeedScreen() {
       </View>
 
       <List
-        userId={userId} 
+        userId={userId}
         category={selectedCategory}
         area={selectedArea}
         query={query}
@@ -321,7 +340,6 @@ export default function ItemFeedScreen() {
             width: "95%",
             backgroundColor: "#fff",
             marginHorizontal: 5,
-            
           }}
         >
           {itemName}
@@ -362,8 +380,9 @@ export default function ItemFeedScreen() {
             keyboardType="number-pad"
             marginHorizontal={5}
             value={String(itemDays)}
-            onChangeText={(value) => {(value>0)?setItemDays(value):setItemDays("");}}
-
+            onChangeText={(value) => {
+              value > 0 ? setItemDays(value) : setItemDays("");
+            }}
           />
           <View
             style={{
@@ -386,7 +405,8 @@ export default function ItemFeedScreen() {
                 fontSize: 12,
               }}
             >
-              You will pay {(itemDays=="")?itemPrice:itemPrice*itemDays} Rs to {itemOwner}
+              You will pay {itemDays == "" ? itemPrice : itemPrice * itemDays}{" "}
+              Rs to {itemOwner}
             </Text>
           </View>
         </View>

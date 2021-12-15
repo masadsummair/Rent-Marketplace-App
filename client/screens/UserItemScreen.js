@@ -18,6 +18,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
 import API_URL from "../config/API_URL";
+import { AuthContext } from "../components/context";
 
 export default function UserItemScreen() {
   const [visible, setVisible] = React.useState(false);
@@ -25,6 +26,8 @@ export default function UserItemScreen() {
   const [showUpdateModal, setshowUpdateModal] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const { userId } = React.useContext(AuthContext);
 
   const [itemName, setItemName] = useState("");
   const [itemid, setItemid] = useState("");
@@ -37,6 +40,7 @@ export default function UserItemScreen() {
   const [reload, setReload] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [updateImage, setUpdateImage] = useState(false);
+
   const client = axios.create({
     baseURL: API_URL,
   });
@@ -102,7 +106,7 @@ export default function UserItemScreen() {
         }
       }
       let itemData = {
-        user_id: "1", //come from session
+        user_id: userId, //come from session
         item_id: itemid,
         item_name: itemName,
         description: itemDescription,
@@ -149,7 +153,7 @@ export default function UserItemScreen() {
       }
 
       let itemData = {
-        user_id: "1", //come from session
+        user_id: userId, //come from session
         itemName: itemName,
         description: itemDescription,
         price: itemPrice,
@@ -221,7 +225,6 @@ export default function UserItemScreen() {
   return (
     <View style={styles.container}>
       <ItemsList reload={reload} reloadSetter={setReload} viewItem={viewItem} />
-
 
       {visible ? (
         <Modal>

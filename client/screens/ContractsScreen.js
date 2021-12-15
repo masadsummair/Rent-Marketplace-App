@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-} from "react-native";
+import { View, StyleSheet, Dimensions, StatusBar } from "react-native";
 import ContractsList from "../components/ContractsList";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 const dcategories = ["active", "pending", "rejected", "onhold", "completed"];
 export default function UserItemScreen() {
   const [selectedState, setSelectedState] = useState("active");
   const [listFlag, setListFlag] = useState(true);
+
   useEffect(() => {
     console.log("Main");
   }, []);
-
 
   return (
     <View style={styles.container}>

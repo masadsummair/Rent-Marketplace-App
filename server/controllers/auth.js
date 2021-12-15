@@ -28,6 +28,7 @@ const signup = async (req, res, next) => {
       return;
     }
     let hashedPassword = await bcrypt.hash(data.password, 12);
+    console.log(data);
     const [result3] = await conn.execute(
       "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area_id, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
       [
@@ -45,7 +46,17 @@ const signup = async (req, res, next) => {
       ]
     );
     if (result3.affectedRows > 0) {
-      res.status(200).json({ message: "User Data Inserted Successfully" });
+      const token = jwt.sign({ email: req.body.email }, "eventus", {
+        expiresIn: "1h",
+      });
+
+      res
+        .status(200)
+        .json({
+          message: "User Data Inserted Successfully",
+          userId: result3.insertId,
+          token: token,
+        });
     } else {
       res.status(400).json({ message: "Error while inserting user data" });
       throw new Error("Error while inserting user data");
@@ -68,8 +79,11 @@ const login = async (req, res, next) => {
       const token = jwt.sign({ email: req.body.email }, "eventus", {
         expiresIn: "1h",
       });
+      const userId = results[0]["user_id"];
       console.log("user logged in");
-      res.status(200).json({ message: "user logged in", token: token });
+      res
+        .status(200)
+        .json({ message: "user logged in", token: token, userId: userId });
     } else {
       console.log("Enter Correct Credentials");
       res.status(202).json({ message: "Enter Correct Credentials" });

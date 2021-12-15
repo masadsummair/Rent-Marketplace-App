@@ -93,6 +93,7 @@ const addItem = async (req, res, next) => {
 const updateItem = async (req, res, next) => {
   const data = req.body;
   const check_itemid = async (item_id, user_id) => {
+    console.log(item_id, user_id);
     let [result1] = await conn.execute(
       "SELECT U.user_id FROM user_item U inner join item I on I.item_id=U.item_id WHERE I.item_id=? and U.user_id=?",
       [item_id, user_id]
