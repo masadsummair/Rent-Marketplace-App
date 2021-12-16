@@ -56,8 +56,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#DAF0EE",
-    // backgroundColor: "#fff",
+    // backgroundColor: "#DAF0EE",
+    // backgroundColor: "#E0FBFC",
+    backgroundColor: "#fff",
   },
   fab: {
     position: "absolute",
@@ -87,12 +88,22 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
 
-  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left", fontSize: 14 },
+  dropdown1BtnTxtStyle: {
+    color: "#444",
+    textAlign: "left",
+    fontSize: 14,
+    textTransform: "capitalize",
+  },
   dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
 
   dropdown1RowStyle: {
     backgroundColor: "#EFEFEF",
     borderBottomColor: "#C5C5C5",
   },
-  dropdown1RowTxtStyle: { color: "#444", textAlign: "left", fontSize: 16 },
+  dropdown1RowTxtStyle: {
+    color: "#444",
+    textAlign: "left",
+    fontSize: 16,
+    textTransform: "capitalize",
+  },
 });

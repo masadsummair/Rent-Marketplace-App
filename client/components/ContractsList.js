@@ -21,6 +21,7 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
     if (!reload && !listFlag) {
       return;
     }
+
     console.log("listState use effect", listState);
     setLoading(true);
     //Load data using provided state
@@ -68,7 +69,7 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
 
   return loading ? (
     <ActivityIndicator />
-  ) : data.length != 0 ? (
+  ) : (
     <FlatList
       style={{
         width: "100%",
@@ -101,9 +102,5 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
         <RefreshControl refreshing={refreshing} onRefresh={loadListData} />
       }
     />
-  ) : (
-    <View style={{ borderColor: "black", borderWidth: 1, padding: 10 }}>
-      <Text>No Contracts Found</Text>
-    </View>
   );
 }

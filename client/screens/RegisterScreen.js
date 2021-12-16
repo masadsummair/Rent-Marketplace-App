@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Text,
@@ -22,6 +22,9 @@ import color from "../theme/color";
 import axios from "axios";
 import API_URL from "../config/API_URL";
 import { AuthContext } from "../components/context";
+import SelectDropdown from "react-native-select-dropdown";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 const client = axios.create({ baseURL: API_URL });
 
 const validationSchema = Yup.object().shape({
@@ -29,8 +32,14 @@ const validationSchema = Yup.object().shape({
   // password: Yup.string().required().min(3).label("Password"),
   // firstName:Yup.string().required().label("First Name"),
   // lastName:Yup.string().required().label("Last Name"),
-  // cnic:Yup.string().required().label("CNIC"),
-  // phone:Yup.string().required().label("Phone"),
+  cnic: Yup.string()
+    .required()
+    .matches("^[0-9]{5}-[0-9]{7}-[0-9]$", "Invalid CNIC")
+    .label("CNIC"),
+  phone: Yup.string()
+    .required()
+    .matches(`^[0-9]{11}$`, "Should be of 11 digits")
+    .label("Phone"),
   // street:Yup.string().required().label("Street"),
   // city:Yup.string().required().label("City"),
   // country:Yup.string().required().label("Country"),
@@ -38,25 +47,29 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function RegisterScreen({ navigation }) {
+  const [date, setDate] = useState(new Date());
+  const dcategories = ["Gulshan", "Nazimabad", "Garden", "Shadman", "DHA"];
+  const [show, setShow] = useState(false);
+
   const [modalVisible, setModalVisible] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const { signUp } = React.useContext(AuthContext);
   const signup = async (values, actions) => {
-    const res = await client.post("/signup", {
-      ...values,
-    });
-    if (res.status == 200) {
-      let userId = res.data.userId;
-      let token = res.data.token;
-      signUp(token, userId);
-    } else if (res.status == 202) {
-      let msg = JSON.parse(res["request"]["_response"]).message;
-      setMessage(msg);
-      setModalVisible(true);
-    }
-
-    actions.resetForm({ values: "" });
-    actions.setSubmitting(false);
+    console.log("values", values);
+    // const res = await client.post("/signup", {
+    //   ...values,
+    // });
+    // if (res.status == 200) {
+    //   let userId = res.data.userId;
+    //   let token = res.data.token;
+    //   signUp(token, userId);
+    // } else if (res.status == 202) {
+    //   let msg = JSON.parse(res["request"]["_response"]).message;
+    //   setMessage(msg);
+    //   setModalVisible(true);
+    // }
+    // actions.resetForm({ values: "" });
+    // actions.setSubmitting(false);
   };
   return (
     <ImageBackground
@@ -100,9 +113,7 @@ export default function RegisterScreen({ navigation }) {
               cnic: "",
               phone: "",
               street: "",
-              city: "",
               area: "",
-              country: "",
               birthDate: "",
             }}
             onSubmit={signup}
@@ -191,7 +202,7 @@ export default function RegisterScreen({ navigation }) {
                   value={values.street}
                 />
                 <ErrorMessage error={errors.street} visible={touched.street} />
-                <AppTextInput
+                {/* <AppTextInput
                   autoCapitalize="none"
                   autoCorrect={false}
                   onBlur={() => setFieldTouched("area")}
@@ -199,41 +210,79 @@ export default function RegisterScreen({ navigation }) {
                   onChangeText={handleChange("area")}
                   value={values.area}
                 />
-                <ErrorMessage error={errors.area} visible={touched.area} />
+                <ErrorMessage error={errors.area} visible={touched.area} /> */}
 
-                <AppTextInput
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onBlur={() => setFieldTouched("city")}
-                  placeholder="City"
-                  onChangeText={handleChange("city")}
-                  value={values.city}
+                <SelectDropdown
+                  data={dcategories}
+                  defaultValue={dcategories[0]}
+                  onSelect={(selectedItem, index) => {
+                    handleChange("area")(selectedItem);
+                  }}
+                  defaultButtonText={"Select Area"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return selectedItem;
+                  }}
+                  rowTextForSelection={(item, index) => {
+                    return item;
+                  }}
+                  buttonStyle={styles.dropdown1BtnStyle}
+                  buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                  renderDropdownIcon={() => {
+                    return (
+                      <FontAwesome
+                        name="chevron-down"
+                        color={"#444"}
+                        size={18}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  dropdownStyle={styles.dropdown1DropdownStyle}
+                  rowStyle={styles.dropdown1RowStyle}
+                  rowTextStyle={styles.dropdown1RowTxtStyle}
                 />
-                <ErrorMessage error={errors.city} visible={touched.city} />
-                <AppTextInput
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onBlur={() => setFieldTouched("country")}
-                  placeholder="Country"
-                  onChangeText={handleChange("country")}
-                  value={values.country}
-                />
-                <ErrorMessage
-                  error={errors.country}
-                  visible={touched.country}
-                />
-                <AppTextInput
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onBlur={() => setFieldTouched("birthDate")}
-                  placeholder="Birth Date"
-                  onChangeText={handleChange("birthDate")}
-                  value={values.birthDate}
-                />
-                <ErrorMessage
-                  error={errors.birthDate}
-                  visible={touched.birthDate}
-                />
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "transparent",
+                    opacity: 52,
+                    borderWidth: 2,
+                    borderColor: "#505050",
+                    borderRadius: 30,
+                    paddingVertical: 10,
+                    paddingLeft: 30,
+                  }}
+                  onPress={() => {
+                    setShow(true);
+                  }}
+                >
+                  <Text style={{ fontSize: 18, color: "grey" }}>
+                    {`Birth Date: ${date.getDate()}-${
+                      date.getMonth() + 1
+                    }-${date.getFullYear()}`}
+                  </Text>
+                </TouchableOpacity>
+                {show ? (
+                  <DateTimePickerModal
+                    isVisible={show}
+                    mode="date"
+                    onConfirm={(date) => {
+                      handleChange("birthDate")(
+                        `${date.getDate()}-${
+                          date.getMonth() + 1
+                        }-${date.getFullYear()}`
+                      );
+                      setDate(date);
+                      setShow(false);
+                    }}
+                    onCancel={() => {
+                      setShow(false);
+                    }}
+                  />
+                ) : (
+                  <></>
+                )}
+
                 <AppButton title="Sign Up" onPress={handleSubmit} />
                 <View style={{ flexDirection: "row", alignSelf: "center" }}>
                   <Text style={styles.text}>Already have account? </Text>
@@ -316,5 +365,38 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+
+  //Dropdown Styling
+  dropdown1BtnStyle: {
+    backgroundColor: "transparent",
+    opacity: 52,
+    borderWidth: 2,
+    borderColor: "#505050",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingLeft: 30,
+    width: "100%",
+    marginVertical: 10,
+  },
+
+  dropdown1BtnTxtStyle: {
+    textAlign: "left",
+    marginLeft: 20,
+    textTransform: "capitalize",
+    fontSize: 18,
+    color: "grey",
+  },
+  dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
+
+  dropdown1RowStyle: {
+    backgroundColor: "#EFEFEF",
+    borderBottomColor: "#C5C5C5",
+  },
+  dropdown1RowTxtStyle: {
+    color: "#444",
+    textAlign: "left",
+    fontSize: 16,
+    textTransform: "capitalize",
   },
 });

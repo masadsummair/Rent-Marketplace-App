@@ -11,7 +11,8 @@ import { Button } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import API_URL from "../config/API_URL";
-import {  AirbnbRating } from 'react-native-elements';
+import { AirbnbRating } from "react-native-elements";
+import { Rating } from "react-native-elements";
 export default function ContractsListCard({
   userId,
   id,
@@ -34,55 +35,75 @@ export default function ContractsListCard({
   const client = axios.create({
     baseURL: API_URL,
   });
-  const rejejectOffer=async ()=>
-  {
-    await client.put(`/contract/reject`,{"contract_id":id})
-    .then(
-    (response) => {console.log(response["request"]["_response"])},
-    (response) => {console.log(response["request"]["_response"])});
+  const rejejectOffer = async () => {
+    await client.put(`/contract/reject`, { contract_id: id }).then(
+      (response) => {
+        console.log(response["request"]["_response"]);
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
+      }
+    );
     setReload(true);
-  }
-  const acceptOffer=async ()=>
-  {
-    await client.put(`/contract/accept`,{"contract_id":id,"item_id":itemId})
-    .then(
-    (response) => {console.log(response["request"]["_response"])},
-    (response) => {console.log(response["request"]["_response"])});
+  };
+  const acceptOffer = async () => {
+    await client
+      .put(`/contract/accept`, { contract_id: id, item_id: itemId })
+      .then(
+        (response) => {
+          console.log(response["request"]["_response"]);
+        },
+        (response) => {
+          console.log(response["request"]["_response"]);
+        }
+      );
     setReload(true);
-  }
-  const returnItem=async ()=>
-  {
-    await client.put(`/contract/returnitem`,{"contract_id":id,"item_id":itemId})
-    .then(
-    (response) => {console.log(response["request"]["_response"])},
-    (response) => {console.log(response["request"]["_response"])});
+  };
+  const returnItem = async () => {
+    await client
+      .put(`/contract/returnitem`, { contract_id: id, item_id: itemId })
+      .then(
+        (response) => {
+          console.log(response["request"]["_response"]);
+        },
+        (response) => {
+          console.log(response["request"]["_response"]);
+        }
+      );
     setReload(true);
-  }
-  const receviedItem=async ()=>
-  {
-    await client.put(`/contract/end`,{"contract_id":id})
-    .then(
-    (response) => {console.log(response["request"]["_response"])},
-    (response) => {console.log(response["request"]["_response"])});
+  };
+  const receviedItem = async () => {
+    await client.put(`/contract/end`, { contract_id: id }).then(
+      (response) => {
+        console.log(response["request"]["_response"]);
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
+      }
+    );
     setReload(true);
-  }
-  const giveRating=async ()=>
-  {
-    await client.post(`/contract/rating`,{
-      "contract_id":id,
-      "score":ratingScore,
-      "feedback":ratingFeedback,
-      "status":"yes"
-    })
-    .then(
-    (response) => {console.log(response["request"]["_response"])},
-    (response) => {console.log(response["request"]["_response"])});
+  };
+  const giveRating = async () => {
+    await client
+      .post(`/contract/rating`, {
+        contract_id: id,
+        score: ratingScore,
+        feedback: ratingFeedback,
+        status: "yes",
+      })
+      .then(
+        (response) => {
+          console.log(response["request"]["_response"]);
+        },
+        (response) => {
+          console.log(response["request"]["_response"]);
+        }
+      );
     setReload(true);
-  }
+  };
   let button;
   if (status == "active") {
-    if(userId==toid) 
-    {
+    if (userId == toid) {
       button = (
         <Button
           icon="rotate-left"
@@ -97,27 +118,26 @@ export default function ContractsListCard({
           Return the item
         </Button>
       );
-    }else
-    {
-      button = (<Button  color="#90ee90" mode="contained" >
-        Contract is Active
-      </Button>);
+    } else {
+      button = (
+        <Button color="#90ee90" mode="contained">
+          Contract is Active
+        </Button>
+      );
     }
   } else if (status == "pending") {
-      if(userId==toid) 
-      {
-        button = (
-          <Button
-            color="#eed202"
-            mode="contained"
-            onPress={() => {}}
-            disabled={true}
-          >
-           Your Contract is in Pending
-          </Button>
-        );
-      }else
-      {
+    if (userId == toid) {
+      button = (
+        <Button
+          color="#eed202"
+          mode="contained"
+          onPress={() => {}}
+          disabled={true}
+        >
+          Your Contract is in Pending
+        </Button>
+      );
+    } else {
       button = (
         <View
           style={{
@@ -131,7 +151,9 @@ export default function ContractsListCard({
             mode="contained"
             width="50%"
             compact={true}
-            onPress={() => {acceptOffer();}}
+            onPress={() => {
+              acceptOffer();
+            }}
           >
             Accept Offer
           </Button>
@@ -141,7 +163,9 @@ export default function ContractsListCard({
             mode="contained"
             width="50%"
             compact={true}
-            onPress={() => {rejejectOffer();}}
+            onPress={() => {
+              rejejectOffer();
+            }}
           >
             Reject Offer
           </Button>
@@ -149,8 +173,7 @@ export default function ContractsListCard({
       );
     }
   } else if (status == "onhold") {
-    if(userId==toid)
-    {
+    if (userId == toid) {
       button = (
         <Button
           icon="account-arrow-left"
@@ -161,22 +184,22 @@ export default function ContractsListCard({
           Wait for Confirmation
         </Button>
       );
-    }else
-    {
+    } else {
       button = (
         <Button
           icon="account-arrow-left"
           color="lightgreen"
           mode="contained"
-          onPress={() => {receviedItem()}}
+          onPress={() => {
+            receviedItem();
+          }}
         >
           Press if you recevied your item
         </Button>
       );
     }
   } else if (status == "rejected") {
-    if(userId==toid) 
-    {
+    if (userId == toid) {
       button = (
         <Button
           icon="close-octagon"
@@ -188,63 +211,75 @@ export default function ContractsListCard({
           Sorry, your offer got rejected
         </Button>
       );
-      }else
-      {
-        button = (
-          <Button
-            icon="close-octagon"
-            color="#eed202"
-            mode="contained"
-            onPress={() => {}}
-            disabled={true}
-          >
-            rejected
-          </Button>
-        );
-      }
+    } else {
+      button = (
+        <Button
+          icon="close-octagon"
+          color="#eed202"
+          mode="contained"
+          onPress={() => {}}
+          disabled={true}
+        >
+          rejected
+        </Button>
+      );
+    }
   } else if (status == "completed") {
-    if(userId==toid) 
-    {
+    if (userId == toid) {
       button = (
         <Button icon="file" color="green" mode="contained" onPress={() => {}}>
           Contract Completed
         </Button>
       );
-    }else
-    {
-      if(ratingStatus=='not rated')
-      {
-          button = (
-          <View >
-          <View style={{alignItems: 'center'}}>
-            <AirbnbRating  onFinishRating={(value)=>{setratingScore(value)}} showRating count={5}  reviews={["Terrible", "Bad","Good", "Very Good",  "Amazing"]}  defaultRating={ratingScore}  size={22}/>
+    } else {
+      if (ratingStatus == "not rated") {
+        button = (
+          <View>
+            <View style={{ alignItems: "center" }}>
+              <AirbnbRating
+                onFinishRating={(value) => {
+                  setratingScore(value);
+                }}
+                showRating
+                count={5}
+                reviews={["Terrible", "Bad", "Good", "Very Good", "Amazing"]}
+                defaultRating={ratingScore}
+                size={22}
+              />
 
-            <TextInput
-              borderWidth={2}
-              borderColor="grey"
-              padding={10}
-              marginVertical={0}
-              height={60}
-              width="96%"
-              backgroundColor={"#fff"}
-              placeholder="Feedback"
-              value={ratingFeedback}
-              multiline={true}
-              onChangeText={(text) => {
-                setratingFeedback(text);
-              }}
-            />
+              <TextInput
+                borderWidth={2}
+                borderColor="grey"
+                padding={10}
+                marginVertical={0}
+                height={60}
+                width="96%"
+                backgroundColor={"#fff"}
+                placeholder="Feedback"
+                value={ratingFeedback}
+                multiline={true}
+                onChangeText={(text) => {
+                  setratingFeedback(text);
+                }}
+              />
             </View>
-            <Button style={{marginTop: 15}} icon="file" color="green" mode="contained" onPress={() => {giveRating()}}>
+            <Button
+              style={{ marginTop: 15 }}
+              icon="file"
+              color="green"
+              mode="contained"
+              onPress={() => {
+                giveRating();
+              }}
+            >
               Sumbit
             </Button>
-          </View>  
+          </View>
         );
-      }else
-      {
+      } else {
         button = (
           <Button icon="file" color="green" mode="contained" onPress={() => {}}>
-            Contract Completed  
+            Contract Completed
           </Button>
         );
       }
@@ -252,11 +287,7 @@ export default function ContractsListCard({
   }
   return (
     <View style={styles.card}>
-      <TouchableOpacity
-        onPress={() => {
-          
-        }}
-      >
+      <TouchableOpacity onPress={() => {}}>
         {status == "active" ? (
           <View
             style={{
@@ -285,7 +316,18 @@ export default function ContractsListCard({
         <View style={styles.cardContent}>
           <View style={{ alignItems: "center" }}>
             <Ionicons name="person-outline" size={30} color="black" />
-            <Text>{(userId!=toid)?to:from}</Text>
+            <Text>{userId != toid ? to : from}</Text>
+            <Rating
+              style={{ marginLeft: 4 }}
+              type="star"
+              readonly
+              //Set Rating out of 5 Here
+              startingValue={3.5}
+              //Dont change the Rating Count
+              ratingCount={5}
+              imageSize={16}
+              fractions={1}
+            />
           </View>
           <View
             style={{
@@ -299,12 +341,12 @@ export default function ContractsListCard({
                 color: "green",
               }}
             >
-              {price}
+              {price + " Rs"}
             </Text>
           </View>
           <View style={{ alignItems: "center" }}>
             <Ionicons name="person-outline" size={30} color="black" />
-            <Text>{(userId==toid)?to:from}</Text>
+            <Text>{userId == toid ? to : from}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -317,15 +359,17 @@ const styles = StyleSheet.create({
   card: {
     width: Dimensions.get("window").width * 0.85,
     borderRadius: 6,
-    elevation: 5,
+    elevation: 6,
     backgroundColor: "#fff",
     shadowOffset: { width: 1, height: 1 },
     shadowColor: "#333",
     shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowRadius: 5,
     marginHorizontal: 8,
     marginVertical: 10,
     position: "relative",
+    borderColor: "grey",
+    borderWidth: 1,
   },
   cardContent: {
     flexDirection: "row",

@@ -363,6 +363,42 @@ export default function ItemFeedScreen() {
 
         <View
           style={{
+            borderWidth: 1,
+            borderColor: "black",
+            padding: 10,
+            marginVertical: 5,
+            textAlign: "center",
+            width: "95%",
+            backgroundColor: "#fff",
+            marginHorizontal: 5,
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="person-outline" size={16} color="black" />
+            <Text style={{ marginLeft: 4 }}>Asad</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="call-outline" size={16} color="black" />
+            <Text style={{ marginLeft: 4 }}>03001234567</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
