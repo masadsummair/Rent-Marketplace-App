@@ -3,12 +3,26 @@ import { FlatList } from "react-native";
 import API_URL from "../config/API_URL";
 import Card from "../components/Card";
 import axios from "axios";
-export default function List({ userId, category, area, min, max, query,viewItem,reload,setReload }) {
+export default function List({
+  userId,
+  category,
+  area,
+  min,
+  max,
+  query,
+  viewItem,
+  reload,
+  setReload,
+}) {
   const [itemdata, setitemdata] = React.useState([]);
   useEffect(() => {
     if (!reload) {
-            return;
+      return;
     }
+
+    // const interval = setInterval(() => {
+    console.log("This will run every second!");
+
     const client = axios.create({
       baseURL: API_URL,
     });
@@ -25,7 +39,7 @@ export default function List({ userId, category, area, min, max, query,viewItem,
               search_data[i].image_url != ""
                 ? search_data[i].image_url
                 : "notfound.png";
-              data1.push({
+            data1.push({
               userid: search_data[i].user_id,
               username: search_data[i].username,
               id: search_data[i].item_id,
@@ -43,10 +57,13 @@ export default function List({ userId, category, area, min, max, query,viewItem,
           console.log(response["request"]["_response"]);
         }
       );
-      console.log(category, area, min, max, query, reload);
-      setReload(false);
-  }, [category, area, min, max, query,reload]);
+    console.log(category, area, min, max, query, reload);
+    // setReload(false);
 
+    console.log("reloading list");
+    // }, 1000);
+    // return () => clearInterval(interval);
+  }, [category, area, min, max, query, reload]);
 
   return (
     <FlatList
@@ -65,7 +82,7 @@ export default function List({ userId, category, area, min, max, query,viewItem,
           description={item.description}
           price={item.price}
           category={item.category}
-          viewItem={viewItem} 
+          viewItem={viewItem}
           imageURL={item.image}
         />
       )}

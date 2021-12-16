@@ -63,7 +63,7 @@ export default function ItemsListCard({
 
         <View style={styles.cardFooter}>
           <Text style={styles.cardFooterCategory}>Category: {category} </Text>
-          <Text style={styles.cardFooterPrice}>Price: {price}</Text>
+          <Text style={styles.cardFooterPrice}>Price: {price + " Rs"}</Text>
         </View>
       </TouchableOpacity>
       {availability == "available" ? (

@@ -11,51 +11,78 @@ export default function ProfileScreen() {
   const itemCategory = ["Clothes", "Electronics", "Books", "Other"];
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.row }} width="95%">
-        <Text style={{ textAlign: "left" }}>
-          <Ionicons name="ios-person-outline" size={20} color="black" />
-          Username
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 40, color: "#3D5A80" }}>
+          HI <Text style={{ fontWeight: "bold" }}>ASAD</Text>
         </Text>
-        <TextInput
-          borderWidth={1}
-          borderColor="black"
-          padding={10}
-          marginVertical={5}
-          height={50}
-          width="95%"
-          backgroundColor={"#fff"}
-          placeholder="Item Name"
-          marginHorizontal={5}
-          value={""}
-          onChangeText={() => {}}
-        />
       </View>
 
       <View style={{ ...styles.row }} width="95%">
-        <Text style={{ textAlign: "left" }}>
-          <Ionicons name="lock-closed-outline" size={20} color="black" />
-          Password
+        <View
+          style={{ flexDirection: "row", marginLeft: 5, alignItems: "center" }}
+        >
+          <Ionicons name="mail-outline" size={20} color="black" />
+          <Text style={{ marginLeft: 5 }}>Email</Text>
+        </View>
+        <Text
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: "black",
+            padding: 15,
+            marginVertical: 5,
+            width: "95%",
+            backgroundColor: "#D3D3D3",
+            marginHorizontal: 5,
+          }}
+        >
+          Hello
         </Text>
-        <TextInput
-          borderWidth={1}
-          borderColor="black"
-          padding={10}
-          marginVertical={5}
-          height={50}
-          width="95%"
-          backgroundColor={"#fff"}
-          placeholder="Item Name"
-          marginHorizontal={5}
-          value={""}
-          onChangeText={() => {}}
-        />
       </View>
 
       <View style={{ ...styles.row }} width="95%">
-        <Text style={{ textAlign: "left" }}>
+        <View
+          style={{ flexDirection: "row", marginLeft: 5, alignItems: "center" }}
+        >
+          <Ionicons name="card-outline" size={20} color="black" />
+          <Text style={{ marginLeft: 5 }}>CNIC Number</Text>
+        </View>
+
+        <Text
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: "black",
+            padding: 15,
+            marginVertical: 5,
+            width: "95%",
+            backgroundColor: "#D3D3D3",
+            marginHorizontal: 5,
+          }}
+        >
+          Hello
+        </Text>
+      </View>
+
+      <View style={{ ...styles.row }} width="95%">
+        <View
+          style={{
+            flexDirection: "row",
+            marginLeft: 5,
+            alignItems: "center",
+          }}
+        >
           <Ionicons name="home-outline" size={20} color="black" />
-          Area
-        </Text>
+          <Text style={{ marginLeft: 5 }}>Area</Text>
+        </View>
         <SelectDropdown
           data={itemCategory}
           // value={pselectedCategory}
@@ -85,14 +112,49 @@ export default function ProfileScreen() {
           rowTextStyle={styles.dropdown1RowTxtStyle}
         />
       </View>
-      <Button
-        mode="contained"
-        onPress={() => {
-          signOut();
-        }}
-      >
-        Sign Out
-      </Button>
+
+      <View style={{ ...styles.row }} width="95%">
+        <View
+          style={{
+            flexDirection: "row",
+            marginLeft: 5,
+            alignItems: "center",
+          }}
+        >
+          <Ionicons name="call-outline" size={20} color="black" />
+          <Text style={{ marginLeft: 5 }}>Phone Number</Text>
+        </View>
+        <TextInput
+          borderWidth={1}
+          borderColor="black"
+          padding={10}
+          marginVertical={5}
+          width="95%"
+          backgroundColor={"#fff"}
+          marginHorizontal={5}
+          value={""}
+          onChangeText={() => {}}
+        />
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            signOut();
+          }}
+        >
+          <Ionicons name="log-out-outline" size={20} color="white" /> Sign Out
+        </Button>
+        <Button
+          mode="contained"
+          color="#98C1D9"
+          onPress={() => {}}
+          marginLeft={10}
+        >
+          <Ionicons name="reload-outline" size={20} color="black" /> Update
+          Changes
+        </Button>
+      </View>
     </View>
   );
 }
@@ -101,12 +163,11 @@ const styles = StyleSheet.create({
   container: {
     marginTop: StatusBar.currentHeight + 10,
     flex: 1,
-    backgroundColor: "#fff",
+
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#DAF0EE",
-
-    // backgroundColor: "#fff",
+    // backgroundColor: "#DAF0EE",
+    backgroundColor: "#fff",
   },
   row: {
     marginVertical: 5,
@@ -120,6 +181,7 @@ const styles = StyleSheet.create({
     borderColor: "#444",
     marginVertical: 5,
     marginHorizontal: 5,
+    width: "95%",
   },
 
   dropdown1BtnTxtStyle: { color: "#444", textAlign: "left", fontSize: 14 },

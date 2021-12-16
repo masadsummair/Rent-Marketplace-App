@@ -503,7 +503,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#DAF0EE",
+    // backgroundColor: "#DAF0EE",
+    backgroundColor: "#f5f5f5",
   },
   paragraph: {
     fontSize: 18,
