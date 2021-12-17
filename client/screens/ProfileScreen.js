@@ -5,10 +5,68 @@ import { AuthContext } from "../components/context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import axios from "axios";
+import API_URL from "../config/API_URL";
 
 export default function ProfileScreen() {
   const { userId, signOut } = React.useContext(AuthContext);
-  const itemCategory = ["Clothes", "Electronics", "Books", "Other"];
+  const itemCategory = ["Clothes", "Electronics", "Gulshan Iqbal", "Other"];
+  const [name,setName] = React.useState("");
+  const [email,setEmail] = React.useState("");
+  const [cnic,setCnic] = React.useState("");
+  const [phone,setPhone] = React.useState("");
+  const [area,setArea] = React.useState("");
+  const [areas,setAreas] = React.useState([]);
+  const client = axios.create({
+    baseURL: API_URL,
+  });
+
+  React.useEffect(()=>
+  {
+    client.get(`/getuser?userId=${userId}`).then(
+      (response) => {
+        let user = response["data"];
+        setName(user[0].firstname);
+        setEmail(user[0].email);
+        setPhone(user[0].phone);
+        setCnic(user[0].cnic);
+        setArea(user[0].area_name);
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
+      }
+    );
+    var dareas = [""];
+    client.get("/area").then(
+      (response) => {
+        let area_data = response["data"];
+        for (let i = 0; i < area_data.length; i++) {
+          dareas.push(area_data[i].area_name);
+        }
+        setAreas(dareas);
+      },
+      (response) => {
+        console.log(response);
+      }
+    );
+  },[])
+  const updateData=async()=>
+  {
+    console.log(phone)
+    console.log(userId)
+    client.put("/updateuser",{
+      "userId":userId,
+      "areaName":area,
+      "phone":phone
+    }).then(
+      (response) => {
+        console.log(response["request"]["_response"]);
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
+      }
+    );
+  }
   return (
     <View style={styles.container}>
       <View
@@ -19,7 +77,7 @@ export default function ProfileScreen() {
         }}
       >
         <Text style={{ fontSize: 40, color: "#3D5A80" }}>
-          HI <Text style={{ fontWeight: "bold" }}>ASAD</Text>
+          HI <Text style={{ fontWeight: "bold" }}>{name}</Text>
         </Text>
       </View>
 
@@ -43,7 +101,7 @@ export default function ProfileScreen() {
             marginHorizontal: 5,
           }}
         >
-          Hello
+          {email}
         </Text>
       </View>
 
@@ -68,7 +126,7 @@ export default function ProfileScreen() {
             marginHorizontal: 5,
           }}
         >
-          Hello
+          {cnic}
         </Text>
       </View>
 
@@ -84,12 +142,12 @@ export default function ProfileScreen() {
           <Text style={{ marginLeft: 5 }}>Area</Text>
         </View>
         <SelectDropdown
-          data={itemCategory}
-          // value={pselectedCategory}
+          data={areas}
+          value={area}
           // defaultValueByIndex={1}
-          defaultValue={itemCategory[0]}
+          defaultValue={area}
           onSelect={(selectedItem, index) => {
-            //   setDefaultItemCategory(selectedItem);
+            setArea(selectedItem);
           }}
           defaultButtonText={
             itemCategory[0]
@@ -122,7 +180,7 @@ export default function ProfileScreen() {
           }}
         >
           <Ionicons name="call-outline" size={20} color="black" />
-          <Text style={{ marginLeft: 5 }}>Phone Number</Text>
+          <Text  style={{ marginLeft: 5 }}>Phone Number</Text>
         </View>
         <TextInput
           borderWidth={1}
@@ -131,9 +189,10 @@ export default function ProfileScreen() {
           marginVertical={5}
           width="95%"
           backgroundColor={"#fff"}
+          keyboardType="number-pad"
           marginHorizontal={5}
-          value={""}
-          onChangeText={() => {}}
+          value={String(phone)}
+          onChangeText={(value) => {if(value>=0 &&value.length<11){setPhone(value)}}}
         />
       </View>
       <View style={{ flexDirection: "row" }}>
@@ -148,7 +207,7 @@ export default function ProfileScreen() {
         <Button
           mode="contained"
           color="#98C1D9"
-          onPress={() => {}}
+          onPress={()=>{updateData()}}
           marginLeft={10}
         >
           <Ionicons name="reload-outline" size={20} color="black" /> Update

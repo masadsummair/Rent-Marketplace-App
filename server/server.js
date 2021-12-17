@@ -4,7 +4,7 @@ const { json, urlencoded } = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-const port = 9000;
+const port = 8000;
 
 //middleware
 app.use(cors()); //making cross-domain requests possible
@@ -24,6 +24,6 @@ app.use("/images", express.static("images"));
 //           paste to I
 //                    I
 //                    V         and paste in client/config/API_URL.js  IP(variable)
-app.listen(port, "192.168.0.104", () => {
-  console.log(`App listening at http://192.168.0.104:${port}`);
+app.listen(port, "192.168.233.216", () => {
+  console.log(`App listening at http://192.168.233.216:${port}`);
 });

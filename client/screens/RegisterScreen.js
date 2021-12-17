@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  KeyboardAvoidingView,
   ScrollView,
   Modal,
   Pressable,
@@ -32,14 +31,14 @@ const validationSchema = Yup.object().shape({
   // password: Yup.string().required().min(3).label("Password"),
   // firstName:Yup.string().required().label("First Name"),
   // lastName:Yup.string().required().label("Last Name"),
-  cnic: Yup.string()
-    .required()
-    .matches("^[0-9]{5}-[0-9]{7}-[0-9]$", "Invalid CNIC")
-    .label("CNIC"),
-  phone: Yup.string()
-    .required()
-    .matches(`^[0-9]{11}$`, "Should be of 11 digits")
-    .label("Phone"),
+  // cnic: Yup.string()
+  //   .required()
+  //   .matches("^[0-9]{5}-[0-9]{7}-[0-9]$", "Invalid CNIC")
+  //   .label("CNIC"),
+  // phone: Yup.string()
+  //   .required()
+  //   .matches(`^[0-9]{11}$`, "Should be of 11 digits")
+  //   .label("Phone"),
   // street:Yup.string().required().label("Street"),
   // city:Yup.string().required().label("City"),
   // country:Yup.string().required().label("Country"),
@@ -47,29 +46,49 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function RegisterScreen({ navigation }) {
+
   const [date, setDate] = useState(new Date());
-  const dcategories = ["Gulshan", "Nazimabad", "Garden", "Shadman", "DHA"];
+
   const [show, setShow] = useState(false);
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const { signUp } = React.useContext(AuthContext);
+  const [areas, setAreas] = React.useState([]);
+  React.useEffect(() => {
+    var dareas = [""];
+    client.get("/area").then(
+      (response) => {
+        let area_data = response["data"];
+        for (let i = 0; i < area_data.length; i++) {
+          dareas.push(area_data[i].area_name);
+        }
+        setAreas(dareas);
+      },
+      (response) => {
+        console.log(response);
+      }
+    );
+    console.log("Result Changed");
+  }, []);
+
   const signup = async (values, actions) => {
     console.log("values", values);
-    // const res = await client.post("/signup", {
-    //   ...values,
-    // });
-    // if (res.status == 200) {
-    //   let userId = res.data.userId;
-    //   let token = res.data.token;
-    //   signUp(token, userId);
-    // } else if (res.status == 202) {
-    //   let msg = JSON.parse(res["request"]["_response"]).message;
-    //   setMessage(msg);
-    //   setModalVisible(true);
-    // }
-    // actions.resetForm({ values: "" });
-    // actions.setSubmitting(false);
+    console.log(values);
+    const res = await client.post("/signup", {
+      ...values,
+    });
+    if (res.status == 200) {
+      let userId = res.data.userId;
+      let token = res.data.token;
+      signUp(token, userId);
+    } else if (res.status == 202) {
+      let msg = JSON.parse(res["request"]["_response"]).message;
+      setMessage(msg);
+      setModalVisible(true);
+    }
+    actions.resetForm({ values: "" });
+    actions.setSubmitting(false);
   };
   return (
     <ImageBackground
@@ -114,7 +133,9 @@ export default function RegisterScreen({ navigation }) {
               phone: "",
               street: "",
               area: "",
-              birthDate: "",
+              birthDate: `${date.getFullYear()}-${
+                date.getMonth() + 1
+              }-${date.getDate()}`,
             }}
             onSubmit={signup}
             validationSchema={validationSchema}
@@ -213,8 +234,8 @@ export default function RegisterScreen({ navigation }) {
                 <ErrorMessage error={errors.area} visible={touched.area} /> */}
 
                 <SelectDropdown
-                  data={dcategories}
-                  defaultValue={dcategories[0]}
+                  data={areas}
+                  defaultValue={areas[0]}
                   onSelect={(selectedItem, index) => {
                     handleChange("area")(selectedItem);
                   }}
@@ -268,9 +289,9 @@ export default function RegisterScreen({ navigation }) {
                     mode="date"
                     onConfirm={(date) => {
                       handleChange("birthDate")(
-                        `${date.getDate()}-${
+                        `${date.getFullYear()}-${
                           date.getMonth() + 1
-                        }-${date.getFullYear()}`
+                        }-${date.getDate()}`
                       );
                       setDate(date);
                       setShow(false);

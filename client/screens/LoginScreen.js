@@ -125,17 +125,6 @@ export default function LoginScreen({ navigation }) {
                   error={errors.password}
                   visible={touched.password}
                 />
-                <TouchableOpacity style={{}}>
-                  <Text
-                    style={[
-                      styles.text,
-                      { textAlign: "right", paddingRight: 10 },
-                    ]}
-                    onPress={() => navigation.push("Welcome")}
-                  >
-                    Forget Password ?
-                  </Text>
-                </TouchableOpacity>
 
                 <AppButton title="Sign In" onPress={handleSubmit} />
                 <View style={{ flexDirection: "row", alignSelf: "center" }}>

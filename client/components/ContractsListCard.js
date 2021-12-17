@@ -23,15 +23,16 @@ export default function ContractsListCard({
   toid,
   to,
   price,
-  ratingId,
-  ratingStatus,
   days,
   status,
+  rating,
   reload,
   setReload,
 }) {
+  console.log(rating)
   const [ratingScore, setratingScore] = React.useState(5);
   const [ratingFeedback, setratingFeedback] = React.useState("");
+  const [avgrating, setAvgRating] = React.useState(0.00);
   const client = axios.create({
     baseURL: API_URL,
   });
@@ -83,13 +84,32 @@ export default function ContractsListCard({
     );
     setReload(true);
   };
+  // const userRating=async()=> 
+  // {
+  //   let uid=(toid!=userId)?toid:fromid;
+  //   console.log(uid);
+  //   await client.get(`/contract/getrating?userid=${uid}`).then(
+  //     (response) => {
+  //       let ratings = response["data"];
+  //       let stars=[0,0,0,0,0];
+  //       for (let i = 0; i < ratings.length; i++) {
+  //         stars[ratings[i].score-1]++;
+  //       }
+  //       let avgrating=(1*stars[0]+2*stars[1]+3*stars[2]+4*stars[3]+5*stars[4])/ratings.length;
+  //       setAvgRating(avgrating)
+  //     },
+  //     (response) => {
+  //       console.log(response["request"]["_response"]);
+  //     }
+  //   );
+  // }
   const giveRating = async () => {
     await client
       .post(`/contract/rating`, {
+        user_id: toid,
         contract_id: id,
         score: ratingScore,
         feedback: ratingFeedback,
-        status: "yes",
       })
       .then(
         (response) => {
@@ -101,6 +121,7 @@ export default function ContractsListCard({
       );
     setReload(true);
   };
+  
   let button;
   if (status == "active") {
     if (userId == toid) {
@@ -225,14 +246,15 @@ export default function ContractsListCard({
       );
     }
   } else if (status == "completed") {
-    if (userId == toid) {
+
       button = (
         <Button icon="file" color="green" mode="contained" onPress={() => {}}>
           Contract Completed
         </Button>
       );
-    } else {
-      if (ratingStatus == "not rated") {
+    }
+    else if(status == "not rated") {
+      
         button = (
           <View>
             <View style={{ alignItems: "center" }}>
@@ -276,14 +298,9 @@ export default function ContractsListCard({
             </Button>
           </View>
         );
-      } else {
-        button = (
-          <Button icon="file" color="green" mode="contained" onPress={() => {}}>
-            Contract Completed
-          </Button>
-        );
-      }
-    }
+              
+      
+    
   }
   return (
     <View style={styles.card}>
@@ -322,7 +339,7 @@ export default function ContractsListCard({
               type="star"
               readonly
               //Set Rating out of 5 Here
-              startingValue={3.5}
+              startingValue={rating}
               //Dont change the Rating Count
               ratingCount={5}
               imageSize={16}

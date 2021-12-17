@@ -28,9 +28,9 @@ const signup = async (req, res, next) => {
       return;
     }
     let hashedPassword = await bcrypt.hash(data.password, 12);
-    console.log(data);
+
     const [result3] = await conn.execute(
-      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area_id, city, country, birthdate) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO user( email, password, cnic, firstname, lastname, phone, streetno,area_id, birthdate) VALUES(?,?,?,?,?,?,?,?,?)",
       [
         data.email,
         hashedPassword,
@@ -40,8 +40,6 @@ const signup = async (req, res, next) => {
         parseInt(data.phone),
         data.street,
         parseInt(result2[0].area_id),
-        data.city,
-        data.country,
         data.birthDate,
       ]
     );
@@ -49,7 +47,6 @@ const signup = async (req, res, next) => {
       const token = jwt.sign({ email: req.body.email }, "eventus", {
         expiresIn: "1h",
       });
-
       res
         .status(200)
         .json({
@@ -94,8 +91,51 @@ const login = async (req, res, next) => {
   }
 };
 
+const getUserProfile = async (req, res) => 
+{
+  const data = req.query;
+  
+    let [result1] = await conn.execute(
+      "SELECT firstname,email,cnic,phone,area_id FROM user WHERE user_id=?",
+      [parseInt(data.userId)]
+    );
+    console.log(result1)
+    let [area] = await conn.execute(
+      "SELECT area_name FROM area WHERE area_id=?",
+      [parseInt(result1[0].area_id)]
+    );  
+    result1[0]["area_name"]=area[0].area_name;
+    console.log(result1)
+    if (result1.length > 0) {
+      res.status(200).json(result1);
+    } else {
+      res.status(200).json([]);
+    }
+
+}
+
+const updateUserProfile = async (req, res) => 
+{
+  const data = req.body;
+  let [area] = await conn.execute(
+    "SELECT area_id FROM area WHERE area_name=?",
+    [data.areaName]
+  );  
+  console.log(data)
+  console.log(parseInt(data.phone))
+  let [result1] = await conn.execute(
+    "UPDATE user SET phone=?,area_id=? WHERE user_id=?",
+    [parseInt(data.phone),area[0].area_id,parseInt(data.userId)]
+  );
+  if (result1.affectedRows > 0) {
+    res.status(200).json({ message: "update" });
+  } else {
+    res.status(200).json({ message: "not update" });
+  }  
+}
+
 const logout = (req, res, next) => {
   res.status(200).json({ message: "user logged out" });
 };
 
-module.exports = { signup, login, isAuth, logout };
+module.exports = { signup, login, isAuth, getUserProfile,updateUserProfile };

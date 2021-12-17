@@ -13,7 +13,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [userToken, setUserToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
 
   const authContext = useMemo(() => {
     return {
@@ -43,10 +42,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    //Simulating checking token - if user is logged in or not
-    // setTimeout(() => {
-    //   setIsloading(false);
-    // }, 2000);
+
   }, []);
 
   if (isLoading) {

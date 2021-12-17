@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage }).single("image");
 
-const { signup, login, isAuth } = require("../controllers/auth.js");
+const { signup, login, isAuth ,getUserProfile ,updateUserProfile} = require("../controllers/auth.js");
 
 const { Area, Search, Category } = require("../controllers/search.js");
 
@@ -25,6 +25,7 @@ const {
   retrunItem,
   endContract,
   rating,
+  getUserRating
 } = require("../controllers/contract.js");
 
 const {
@@ -39,6 +40,10 @@ const router = express.Router();
 router.post("/login", login);
 
 router.post("/signup", signup);
+
+router.get("/getuser", getUserProfile);
+
+router.put("/updateuser", updateUserProfile);
 
 router.post("/additem", addItem);
 
@@ -76,6 +81,10 @@ router.put("/contract/end", endContract);
 
 router.post("/contract/rating", rating);
 
+router.get("/contract/getrating", getUserRating);
+
 router.get("/private", isAuth);
+
+router.get("/private", getUserProfile);
 
 module.exports = router;

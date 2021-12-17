@@ -13,6 +13,7 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
   const [refreshing, setRefreshing] = useState(true);
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(true);
+  const [avgrating, setAvgRating] = React.useState(0.00);
   const { userId } = React.useContext(AuthContext);
   const client = axios.create({
     baseURL: API_URL,
@@ -30,16 +31,63 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
     setListFlag(false);
     setReload(false);
   }, [listFlag, reload]);
-  let loadListData = () => {
+  let loadListData =async () => {
     console.log("Loading1...", listState);
 
     //Load data here using the required conditions
-    client.get(`/contract/view?id=${userId}`).then(
+  const userRating=async(toid,fromid)=> 
+  {
+    let uid=(toid!=userId)?toid:fromid;
+    await client.get(`/contract/getrating?userid=${uid}`).then(
+      (response) => {
+        let ratings = response["data"];
+        let stars=[0,0,0,0,0];
+        if(ratings.length==0)
+        {setAvgRating(5);}
+        else
+        {
+        for (let i = 0; i < ratings.length; i++) {
+          stars[ratings[i].score-1]++;
+        }
+        let avgrating=(1*stars[0]+2*stars[1]+3*stars[2]+4*stars[3]+5*stars[4])/ratings.length;
+        setAvgRating(avgrating);
+        }
+      },
+      (response) => {
+        console.log(response["request"]["_response"]);
+      }
+    );
+  }
+  await  client.get(`/contract/view?id=${userId}`).then(
       (response) => {
         let contracts = response["data"];
         let ContractData = [];
         for (let i = 0; i < contracts.length; i++) {
-          if (listState == contracts[i].status) {
+          if(listState == "completed" && contracts[i].status=="not rated" && userId==contracts[i].consumer_id)
+          {
+            userRating(contracts[i].consumer_id,contracts[i].provider_id);
+            ContractData.push({
+              userID: userId,
+              id: contracts[i].contract_id,
+              itemName: contracts[i].item_name,
+              itemId: contracts[i].item_id,
+              fromid: contracts[i].provider_id,
+              from: contracts[i].provider_name,
+              toid: contracts[i].consumer_id,
+              to: contracts[i].consumer_name,
+              price: contracts[i].total_price,
+              status: "completed",
+              days: contracts[i].days,
+              rating:avgrating
+            });
+          }
+          else if (listState == contracts[i].status) {
+            if(contracts[i].status=="not rated" && userId==contracts[i].consumer_id)
+            {
+              continue;
+            }
+            else{
+            userRating(contracts[i].consumer_id,contracts[i].provider_id);
             ContractData.push({
               userID: userId,
               id: contracts[i].contract_id,
@@ -51,10 +99,10 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
               to: contracts[i].consumer_name,
               price: contracts[i].total_price,
               status: contracts[i].status,
-              ratingId: contracts[i].rating_id,
-              ratingStatus: contracts[i].rating_status,
               days: contracts[i].days,
+              rating:avgrating
             });
+          }
           }
         }
         setData([...ContractData]);
@@ -89,10 +137,9 @@ export default function ContractsList({ listState, listFlag, setListFlag }) {
           toid={item.toid}
           to={item.to}
           price={item.price}
-          ratingId={item.ratingId}
-          ratingStatus={item.ratingStatus}
           days={item.days}
           status={item.status}
+          rating={item.rating}
           reload={reload}
           setReload={setReload}
         />
